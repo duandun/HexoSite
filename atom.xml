@@ -47,19 +47,19 @@
   </entry>
   
   <entry>
-    <title>Chapter 8 函数</title>
-    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_8_Function/"/>
-    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_8_Function/</id>
+    <title>Chapter 18 脚本化http</title>
+    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_18_httpScript/"/>
+    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_18_httpScript/</id>
     <published>2016-03-19T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.288Z</updated>
+    <updated>2020-03-12T09:52:16.287Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="8-2-4-间接调用"><a href="#8-2-4-间接调用" class="headerlink" title="8.2.4 间接调用"></a>8.2.4 间接调用</h3><p>javascript中的两个方法call()和apply()可以用来间接地调用函数。两个方法都允许显式指定调用所需的this值，也就是说，任何函数可以作为任何对象的方法来调用，哪怕这个函数不是那个对象的方法。call()方法使用它自有的实参列表作为函数的实参，apply()方法则要求以数组的形式传入参数。</p><h2 id="8-6-闭包"><a href="#8-6-闭包" class="headerlink" title="8.6 闭包"></a>8.6 闭包</h2><p>和其他大多数现代编程语言一样，Javascript也采用词法作用域，也就是说，函数的执行依赖于变量作用域，这个作用域是在函数定义时决定的，而不是函数调用时决定的。为了实现这种词法作用域，Javascript函数对象的内部状态不仅包含函数的代码逻辑，还必须引用当前的作用域链。函数对象可以通过作用域链相互关联起来，函数体内部的变量都可以保存在函数作用域内，这种特性被称为“闭包”。<br>从技术的角度上讲，所有的javascript函数都是闭包：它们都是对象，它们都关联到作用域链。</p><pre><code>var scope = &quot;global scope&quot;;      // 全局变量function checkScope() {    var scope = &quot;local scope&quot;;    // 局部变量    function f() { return scope; }   // 在作用域中返回这个值    return f();}checkScope();                      // =&gt; &quot;local scope&quot;</code></pre><p>checkScope() 函数声明了一个局部变量，并定义了一个函数f(),函数f()返回了这个变量的值，最后将函数f()的执行结果返回。你应当非常清楚为什么调用checkScope()会返回”local scope”。现在我们对这段代码做一点改动：</p><pre><code>var scope = &quot;global scope&quot;;function checkScope() {    var scope = &quot;local scope&quot;;    function f() { return scope; }    return f;}checkScope()();         //  依然返回&quot;local scope&quot;</code></pre><p>在这段代码中，我们将函数内的一对圆括号移动到了checkScope()之后。checkScope()现在仅仅返回函数内嵌套的一个函数对象，而不是直接返回结果。<br>回想一下词法作用域的基本规则：javascript函数的执行用到了作用域链，这个作用域链是函数定义的时候创建的。嵌套的函数f()定义在这个作用域链里，其中的变量scope一定是局部变量，不管在何时何地执行函数f()，这种绑定在执行f()时依然有效。因此最后一行代码返回”local scope”。简言之，闭包这个特性强大到让人吃惊：它们可以捕捉到局部变量（和参数），并一直保存下来，看起来像这些变量绑定到了在其中定义它们的外部函数。</p><p><strong>闭包</strong><br>在3.10.3节中定义了作用域链。我们将作用域链描述为一个对象列表，不是绑定的栈。每次调用javascript函数的时候，都会为之创建一个新的对象用来保存局部变量，把这个对象添加至作用域链中。当函数返回的时候，就从作用域链中将这个绑定变量的对象删除。如果不存在嵌套的函数，也没有其他引用指向这个绑定对象，它就会被当做垃圾回收掉。如果定义了嵌套的函数，每个嵌套的函数都各自对应一个作用域链，并且这个作用域链指向一个变量绑定对象。但如果这些嵌套的函数对象在外部函数中保存下来，那么它们也会和所指向的变量绑定对象一样当做垃圾回收。但是如果这个函数定义了嵌套的函数，并将它作为返回值返回或者存储在某处的属性里，这时就会有一个外部引用指向这个嵌套的函数。它就不会被当做垃圾回收，并且它所指向的变量绑定对象也不会被当做垃圾回收。</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="18-1-使用XMLHttpRequest"><a href="#18-1-使用XMLHttpRequest" class="headerlink" title="18.1 使用XMLHttpRequest"></a>18.1 使用XMLHttpRequest</h2><p>一个HTTP请求由4部分组成：</p><ul><li>HTTP请求方法或“动作”</li><li>正在请求的URL</li><li>一个可选的请求头集合，其中可能包括身份验证信息</li><li>一个可选的请求主题</li></ul><p>服务器返回的HTTP相应包含3部分：</p><ul><li>一个数字和文字组成的状态吗，用来显示请求的成功和失败</li><li>一个响应头集合</li><li>响应主体</li></ul><p>创建XMLHttpRequest对象之后，发起HTTP请求的下一步是调用XMLHttpRequest对象的open()方法去指定这个请求的两个必须部分：方法和URL</p><pre><code>request.open(&quot;GET&quot;,           // 开始一个HTTP GET请求                &quot;data.csv&quot;)   // URL的内容</code></pre><p>如果有请求头的话，请求进程的下个步骤就是设置它。例如，POST请求需要“Content-Type”头指定请求主题的MIME类型：</p><pre><code>request.setRequestHeader(&quot;Content-Type&quot;, &quot;text/plain&quot;);</code></pre><p>如果对相同的头调用setRequestHeader()多次，新值不会取代之前指定的值，相反，HTTP请求将包含这个头的多个副本或这个头将指定多个值。</p><p>XMLHttpRequest对象通常异步使用：发送请求后，send()方法立即返回，直到响应返回。为了在响应准备就绪时得到通知，必须监听XMLHttpRequest对象上的readystatechange事件。但为了理解这个事件类型，你必须理解readyState属性。<br>readyState是一个整数，它指定了HTTP请求的状态：</p><ul><li>UNSENT     0       open()尚未调用</li><li>OPENED     1       open()已调用</li><li>HEADERS_RECEIVED     2      接收到头信息</li><li>LOADING         3        接收到响应主体</li><li>DONE        4         响应完成</li></ul><p>理论上，每次readyState属性改变都会触发readystatechange事件。</p><pre><code>// 获取HTTP响应的onreadystatechange// 发出一个HTTP GET请求以获得指定URL的内容// 当响应成功到达，验证它是否是纯文本// 如果是，把它传递给指定回调函数function getText(url, callback) {    var request = new XMLHttpRequest();    request.open(&quot;GET&quot;, url);    request.onreadystatechange = function() {        // 如果请求完成，则它是成功的        if(request.readyState === 4 &amp;&amp; request.status === 200) {            var type = request.getResponseHeader(&quot;Content-Type&quot;);            if (type.match(/^text/)) {   // 确保响应是文本                callback(request.responseText);    // 把它传递给回调函数            }        }    };    request.send(null);     // 立即发送请求}</code></pre>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h3 id=&quot;8-2-4-间接调用&quot;&gt;&lt;a href=&quot;#8-2-4-间接调用&quot; class=&quot;headerlink&quot; title=&quot;8.2.4 间接调用&quot;&gt;&lt;/a&gt;8.2.4 间接调用&lt;/h3&gt;&lt;p&gt;javascript中的两个方法call()和apply()可以用来间接地调
+        &lt;h2 id=&quot;18-1-使用XMLHttpRequest&quot;&gt;&lt;a href=&quot;#18-1-使用XMLHttpRequest&quot; class=&quot;headerlink&quot; title=&quot;18.1 使用XMLHttpRequest&quot;&gt;&lt;/a&gt;18.1 使用XMLHttpRequest&lt;/
       
     
     </summary>
@@ -76,19 +76,19 @@
   </entry>
   
   <entry>
-    <title>Chapter 18 脚本化http</title>
-    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_18_httpScript/"/>
-    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_18_httpScript/</id>
+    <title>Chapter 8 函数</title>
+    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_8_Function/"/>
+    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_8_Function/</id>
     <published>2016-03-19T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.287Z</updated>
+    <updated>2020-03-12T09:52:16.288Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="18-1-使用XMLHttpRequest"><a href="#18-1-使用XMLHttpRequest" class="headerlink" title="18.1 使用XMLHttpRequest"></a>18.1 使用XMLHttpRequest</h2><p>一个HTTP请求由4部分组成：</p><ul><li>HTTP请求方法或“动作”</li><li>正在请求的URL</li><li>一个可选的请求头集合，其中可能包括身份验证信息</li><li>一个可选的请求主题</li></ul><p>服务器返回的HTTP相应包含3部分：</p><ul><li>一个数字和文字组成的状态吗，用来显示请求的成功和失败</li><li>一个响应头集合</li><li>响应主体</li></ul><p>创建XMLHttpRequest对象之后，发起HTTP请求的下一步是调用XMLHttpRequest对象的open()方法去指定这个请求的两个必须部分：方法和URL</p><pre><code>request.open(&quot;GET&quot;,           // 开始一个HTTP GET请求                &quot;data.csv&quot;)   // URL的内容</code></pre><p>如果有请求头的话，请求进程的下个步骤就是设置它。例如，POST请求需要“Content-Type”头指定请求主题的MIME类型：</p><pre><code>request.setRequestHeader(&quot;Content-Type&quot;, &quot;text/plain&quot;);</code></pre><p>如果对相同的头调用setRequestHeader()多次，新值不会取代之前指定的值，相反，HTTP请求将包含这个头的多个副本或这个头将指定多个值。</p><p>XMLHttpRequest对象通常异步使用：发送请求后，send()方法立即返回，直到响应返回。为了在响应准备就绪时得到通知，必须监听XMLHttpRequest对象上的readystatechange事件。但为了理解这个事件类型，你必须理解readyState属性。<br>readyState是一个整数，它指定了HTTP请求的状态：</p><ul><li>UNSENT     0       open()尚未调用</li><li>OPENED     1       open()已调用</li><li>HEADERS_RECEIVED     2      接收到头信息</li><li>LOADING         3        接收到响应主体</li><li>DONE        4         响应完成</li></ul><p>理论上，每次readyState属性改变都会触发readystatechange事件。</p><pre><code>// 获取HTTP响应的onreadystatechange// 发出一个HTTP GET请求以获得指定URL的内容// 当响应成功到达，验证它是否是纯文本// 如果是，把它传递给指定回调函数function getText(url, callback) {    var request = new XMLHttpRequest();    request.open(&quot;GET&quot;, url);    request.onreadystatechange = function() {        // 如果请求完成，则它是成功的        if(request.readyState === 4 &amp;&amp; request.status === 200) {            var type = request.getResponseHeader(&quot;Content-Type&quot;);            if (type.match(/^text/)) {   // 确保响应是文本                callback(request.responseText);    // 把它传递给回调函数            }        }    };    request.send(null);     // 立即发送请求}</code></pre>]]></content>
+    <content type="html"><![CDATA[<h3 id="8-2-4-间接调用"><a href="#8-2-4-间接调用" class="headerlink" title="8.2.4 间接调用"></a>8.2.4 间接调用</h3><p>javascript中的两个方法call()和apply()可以用来间接地调用函数。两个方法都允许显式指定调用所需的this值，也就是说，任何函数可以作为任何对象的方法来调用，哪怕这个函数不是那个对象的方法。call()方法使用它自有的实参列表作为函数的实参，apply()方法则要求以数组的形式传入参数。</p><h2 id="8-6-闭包"><a href="#8-6-闭包" class="headerlink" title="8.6 闭包"></a>8.6 闭包</h2><p>和其他大多数现代编程语言一样，Javascript也采用词法作用域，也就是说，函数的执行依赖于变量作用域，这个作用域是在函数定义时决定的，而不是函数调用时决定的。为了实现这种词法作用域，Javascript函数对象的内部状态不仅包含函数的代码逻辑，还必须引用当前的作用域链。函数对象可以通过作用域链相互关联起来，函数体内部的变量都可以保存在函数作用域内，这种特性被称为“闭包”。<br>从技术的角度上讲，所有的javascript函数都是闭包：它们都是对象，它们都关联到作用域链。</p><pre><code>var scope = &quot;global scope&quot;;      // 全局变量function checkScope() {    var scope = &quot;local scope&quot;;    // 局部变量    function f() { return scope; }   // 在作用域中返回这个值    return f();}checkScope();                      // =&gt; &quot;local scope&quot;</code></pre><p>checkScope() 函数声明了一个局部变量，并定义了一个函数f(),函数f()返回了这个变量的值，最后将函数f()的执行结果返回。你应当非常清楚为什么调用checkScope()会返回”local scope”。现在我们对这段代码做一点改动：</p><pre><code>var scope = &quot;global scope&quot;;function checkScope() {    var scope = &quot;local scope&quot;;    function f() { return scope; }    return f;}checkScope()();         //  依然返回&quot;local scope&quot;</code></pre><p>在这段代码中，我们将函数内的一对圆括号移动到了checkScope()之后。checkScope()现在仅仅返回函数内嵌套的一个函数对象，而不是直接返回结果。<br>回想一下词法作用域的基本规则：javascript函数的执行用到了作用域链，这个作用域链是函数定义的时候创建的。嵌套的函数f()定义在这个作用域链里，其中的变量scope一定是局部变量，不管在何时何地执行函数f()，这种绑定在执行f()时依然有效。因此最后一行代码返回”local scope”。简言之，闭包这个特性强大到让人吃惊：它们可以捕捉到局部变量（和参数），并一直保存下来，看起来像这些变量绑定到了在其中定义它们的外部函数。</p><p><strong>闭包</strong><br>在3.10.3节中定义了作用域链。我们将作用域链描述为一个对象列表，不是绑定的栈。每次调用javascript函数的时候，都会为之创建一个新的对象用来保存局部变量，把这个对象添加至作用域链中。当函数返回的时候，就从作用域链中将这个绑定变量的对象删除。如果不存在嵌套的函数，也没有其他引用指向这个绑定对象，它就会被当做垃圾回收掉。如果定义了嵌套的函数，每个嵌套的函数都各自对应一个作用域链，并且这个作用域链指向一个变量绑定对象。但如果这些嵌套的函数对象在外部函数中保存下来，那么它们也会和所指向的变量绑定对象一样当做垃圾回收。但是如果这个函数定义了嵌套的函数，并将它作为返回值返回或者存储在某处的属性里，这时就会有一个外部引用指向这个嵌套的函数。它就不会被当做垃圾回收，并且它所指向的变量绑定对象也不会被当做垃圾回收。</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;18-1-使用XMLHttpRequest&quot;&gt;&lt;a href=&quot;#18-1-使用XMLHttpRequest&quot; class=&quot;headerlink&quot; title=&quot;18.1 使用XMLHttpRequest&quot;&gt;&lt;/a&gt;18.1 使用XMLHttpRequest&lt;/
+        &lt;h3 id=&quot;8-2-4-间接调用&quot;&gt;&lt;a href=&quot;#8-2-4-间接调用&quot; class=&quot;headerlink&quot; title=&quot;8.2.4 间接调用&quot;&gt;&lt;/a&gt;8.2.4 间接调用&lt;/h3&gt;&lt;p&gt;javascript中的两个方法call()和apply()可以用来间接地调
       
     
     </summary>
@@ -135,6 +135,35 @@
   </entry>
   
   <entry>
+    <title>Chapter 7 数组</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_7_Array/"/>
+    <id>http://blog.chruyo.com/2016/03/19/《Javascript》权威指南/Chapter_7_Array/</id>
+    <published>2016-03-18T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.288Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="7-2-数组元素的读和写"><a href="#7-2-数组元素的读和写" class="headerlink" title="7.2 数组元素的读和写"></a>7.2 数组元素的读和写</h2><p>当使用小于2^32的非负整数作为属性名时数组会自动维护其length属性值。<br>也可以使用负数或非整数来索引数组。在这种情况下，数值转换为字符串，字符串作为属性名来用。</p><pre><code>a[-1.234] = true;  // 这将创建一个名为&quot;1.234&quot;的属性a[&quot;1000&quot;] = 0;     // 这是数组的第1001个元素a[1.000]           // 和a[1]相等</code></pre><p>事实上数组索引仅仅是对象属性名的一种特殊类型，这意味着javascript数组没有“越界”错误的概念。当试图查询任何对象中不存在的属性时，不会报错，只会得到Undefined值。</p><h2 id="7-3-稀疏数组"><a href="#7-3-稀疏数组" class="headerlink" title="7.3 稀疏数组"></a>7.3 稀疏数组</h2><p>稀疏数组就是包含从0开始的不连续索引的数组。通常，数组的Length属性值代表数组中元素的个数。如何数组是稀疏的，length属性值大于元素的个数。可以用Array()构造函数或简单地指定数组的索引值大于当前的数组长度来创建稀疏数组。</p><pre><code>a = new Array(5);    // 数组没有元素，但是a.length是5a = [];              // 创建一个空数组，length = 0a[1000] = 0;         // 赋值添加一个元素，但是设置Length为1001</code></pre><p>注意，当在数组直接量中省略值时不会创建稀疏数组。省略的元素在数组中是存在的，其值为undefined。这和数组元素根本不存在是有一定微妙的区别的。可以用in操作符检测两者之间的区别：</p><pre><code>var a1 = [,,,];     // 数组是[undefined, undefined, undefined]var a2 = new Array(3);    // 该数组根本没有元素0 in a1             // =&gt; true: a1在索引0处有一个元素0 in a2             // =&gt; false: a2在索引0处没有元素</code></pre><h2 id="7-4-数组长度"><a href="#7-4-数组长度" class="headerlink" title="7.4 数组长度"></a>7.4 数组长度</h2><p>每个数组都有一个Length属性，就是这个属性使其区别于常规的javascript对象。</p><h2 id="7-5-数组元素的添加和删除"><a href="#7-5-数组元素的添加和删除" class="headerlink" title="7.5 数组元素的添加和删除"></a>7.5 数组元素的添加和删除</h2><p>可以像删除对象属性一样使用delete运算符来删除数组元素：</p><pre><code>a = [1,2,3];delete a[1];      // a 在索引1的位置不再有元素1 in a;           // =&gt; false, 数组索引1并未在数组中定义a.length          // =&gt; 3: delete操作并不影响数组长度</code></pre><h2 id="7-6-数组的遍历"><a href="#7-6-数组的遍历" class="headerlink" title="7.6 数组的遍历"></a>7.6 数组的遍历</h2><p>遍历数组的时候，要想排除null、undefined和不存在的元素，如下：</p><pre><code>for(var i = 0; i &lt; a.length; i++) {    if(!a[i]) continue;   // 跳过null、undefined和不存在的元素    // 循环体}</code></pre><p>可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量 。不存在的索引将不会遍历到：</p><pre><code>for(var index in sparseArray) {    var value = sparseArray[index];}</code></pre><h2 id="7-8-数组的函数"><a href="#7-8-数组的函数" class="headerlink" title="7.8 数组的函数"></a>7.8 数组的函数</h2><h3 id="7-8-6-splice"><a href="#7-8-6-splice" class="headerlink" title="7.8.6 splice()"></a>7.8.6 splice()</h3><p>Array.splice()方法是在数组中插入或删除元素的通用方法。<br>splice()的第一个参数制定了插入和（或）删除的起始位置。第二个参数制定了应该从数组中删除的元素的个数。如果省略第二个参数，从起始点开始到数组结尾的所有元素都将被删除。splice()返回一个由删除元素组成的数组，或者如果没有删除元素就返回一个空数组。例如：</p><pre><code>var a = [1,2,3,4,5,6,7,8];a.splice(4);  // 返回[5,6]; a是[1,2,3,4]a.splice(1,2);  // 返回[2,3]; a是[1,4]a.splice(1,1);  // 返回[4]; a是[1]</code></pre><p>splice()的前两个参数指定了需要删除的数组元素。紧随其后的任意个数的参数指定了需要插入到数组中的元素，从第一个参数指定的位置开始插入。例如：</p><pre><code>var a = [1,2,3,4,5];a.splice(2,0,&apos;a&apos;,&apos;b&apos;);   // 返回[]; a是[1,2,&apos;a&apos;,&apos;b&apos;,3,4,5]a.splice(2,2,[1,2],3);   // 返回[&apos;a&apos;,&apos;b&apos;]; a是[1,2,[1,2],3,3,4,5]</code></pre><h3 id="7-9-2-map"><a href="#7-9-2-map" class="headerlink" title="7.9.2 map()"></a>7.9.2 map()</h3><p>map()方法将调用的数组的每个元素传递给指定的函数，并返回一个数组，它包含该函数的返回值。例如：</p><pre><code>a = [1,2,3];b = a.map(function(x) {return x*x; });   // b是[1,4,9]</code></pre><h3 id="7-9-5-reduce-和reduceRight"><a href="#7-9-5-reduce-和reduceRight" class="headerlink" title="7.9.5 reduce()和reduceRight()"></a>7.9.5 reduce()和reduceRight()</h3><p>reduce()和reduceRight()方法使用指定的函数将数组元素进行组合，生成单个值。这在函数式编程中是常见的操作，也可以称为“注入”和“折叠”。例如：</p><pre><code>var a  = [1,2,3,4,5];var sum = a.reduce(function(x, y) {return x + y}, 0);     // 数组求和var product = a.reduce(function(x, y) {return x*y}, 1);    // 数组秋积var max = a.reduce(function(x, y) { return (x &gt; y)?x:y; });   // 求最大值</code></pre><p>reduce()需要两个参数。第一个是执行化简操作的函数。化简函数的任务就是用某种方法把两个值组合或化简为一个值，并返回化简后的值。在上述例子中，函数通过加法，乘法或取最大值的方法组合两个值。第二个（可选）的参数是一个传递给函数的初始值。<br>reduceRight()的工作原理和reduce()一样，不同的是它按照数组索引从高到低（从右到左）处理数组。</p><h2 id="7-10-数组类型"><a href="#7-10-数组类型" class="headerlink" title="7.10 数组类型"></a>7.10 数组类型</h2><p>在 ECMAScript 5 中，可以使用Array.isArray()函数来做数组类型的判断：</p><pre><code>Array.isArray([]);   // =&gt; trueArray.isArray({});   // =&gt; false</code></pre><p>在ECMAScript 3 中isArray()函数的代码可以这样写：</p><pre><code>var isArray = Function.isArray || function(o) {    return typeof o === &quot;object&quot; &amp;&amp;     Object.prototype.toString.call(o) === &quot;[object Array]&quot;;};</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;7-2-数组元素的读和写&quot;&gt;&lt;a href=&quot;#7-2-数组元素的读和写&quot; class=&quot;headerlink&quot; title=&quot;7.2 数组元素的读和写&quot;&gt;&lt;/a&gt;7.2 数组元素的读和写&lt;/h2&gt;&lt;p&gt;当使用小于2^32的非负整数作为属性名时数组会自动维护其le
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
     <title>javascript单例模式</title>
     <link href="http://blog.chruyo.com/2016/03/19/%E6%9D%82%E9%A1%B9/javascript%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
     <id>http://blog.chruyo.com/2016/03/19/杂项/javascript单例模式/</id>
@@ -166,35 +195,6 @@
   </entry>
   
   <entry>
-    <title>Chapter 7 数组</title>
-    <link href="http://blog.chruyo.com/2016/03/19/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_7_Array/"/>
-    <id>http://blog.chruyo.com/2016/03/19/《Javascript》权威指南/Chapter_7_Array/</id>
-    <published>2016-03-18T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.288Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="7-2-数组元素的读和写"><a href="#7-2-数组元素的读和写" class="headerlink" title="7.2 数组元素的读和写"></a>7.2 数组元素的读和写</h2><p>当使用小于2^32的非负整数作为属性名时数组会自动维护其length属性值。<br>也可以使用负数或非整数来索引数组。在这种情况下，数值转换为字符串，字符串作为属性名来用。</p><pre><code>a[-1.234] = true;  // 这将创建一个名为&quot;1.234&quot;的属性a[&quot;1000&quot;] = 0;     // 这是数组的第1001个元素a[1.000]           // 和a[1]相等</code></pre><p>事实上数组索引仅仅是对象属性名的一种特殊类型，这意味着javascript数组没有“越界”错误的概念。当试图查询任何对象中不存在的属性时，不会报错，只会得到Undefined值。</p><h2 id="7-3-稀疏数组"><a href="#7-3-稀疏数组" class="headerlink" title="7.3 稀疏数组"></a>7.3 稀疏数组</h2><p>稀疏数组就是包含从0开始的不连续索引的数组。通常，数组的Length属性值代表数组中元素的个数。如何数组是稀疏的，length属性值大于元素的个数。可以用Array()构造函数或简单地指定数组的索引值大于当前的数组长度来创建稀疏数组。</p><pre><code>a = new Array(5);    // 数组没有元素，但是a.length是5a = [];              // 创建一个空数组，length = 0a[1000] = 0;         // 赋值添加一个元素，但是设置Length为1001</code></pre><p>注意，当在数组直接量中省略值时不会创建稀疏数组。省略的元素在数组中是存在的，其值为undefined。这和数组元素根本不存在是有一定微妙的区别的。可以用in操作符检测两者之间的区别：</p><pre><code>var a1 = [,,,];     // 数组是[undefined, undefined, undefined]var a2 = new Array(3);    // 该数组根本没有元素0 in a1             // =&gt; true: a1在索引0处有一个元素0 in a2             // =&gt; false: a2在索引0处没有元素</code></pre><h2 id="7-4-数组长度"><a href="#7-4-数组长度" class="headerlink" title="7.4 数组长度"></a>7.4 数组长度</h2><p>每个数组都有一个Length属性，就是这个属性使其区别于常规的javascript对象。</p><h2 id="7-5-数组元素的添加和删除"><a href="#7-5-数组元素的添加和删除" class="headerlink" title="7.5 数组元素的添加和删除"></a>7.5 数组元素的添加和删除</h2><p>可以像删除对象属性一样使用delete运算符来删除数组元素：</p><pre><code>a = [1,2,3];delete a[1];      // a 在索引1的位置不再有元素1 in a;           // =&gt; false, 数组索引1并未在数组中定义a.length          // =&gt; 3: delete操作并不影响数组长度</code></pre><h2 id="7-6-数组的遍历"><a href="#7-6-数组的遍历" class="headerlink" title="7.6 数组的遍历"></a>7.6 数组的遍历</h2><p>遍历数组的时候，要想排除null、undefined和不存在的元素，如下：</p><pre><code>for(var i = 0; i &lt; a.length; i++) {    if(!a[i]) continue;   // 跳过null、undefined和不存在的元素    // 循环体}</code></pre><p>可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量 。不存在的索引将不会遍历到：</p><pre><code>for(var index in sparseArray) {    var value = sparseArray[index];}</code></pre><h2 id="7-8-数组的函数"><a href="#7-8-数组的函数" class="headerlink" title="7.8 数组的函数"></a>7.8 数组的函数</h2><h3 id="7-8-6-splice"><a href="#7-8-6-splice" class="headerlink" title="7.8.6 splice()"></a>7.8.6 splice()</h3><p>Array.splice()方法是在数组中插入或删除元素的通用方法。<br>splice()的第一个参数制定了插入和（或）删除的起始位置。第二个参数制定了应该从数组中删除的元素的个数。如果省略第二个参数，从起始点开始到数组结尾的所有元素都将被删除。splice()返回一个由删除元素组成的数组，或者如果没有删除元素就返回一个空数组。例如：</p><pre><code>var a = [1,2,3,4,5,6,7,8];a.splice(4);  // 返回[5,6]; a是[1,2,3,4]a.splice(1,2);  // 返回[2,3]; a是[1,4]a.splice(1,1);  // 返回[4]; a是[1]</code></pre><p>splice()的前两个参数指定了需要删除的数组元素。紧随其后的任意个数的参数指定了需要插入到数组中的元素，从第一个参数指定的位置开始插入。例如：</p><pre><code>var a = [1,2,3,4,5];a.splice(2,0,&apos;a&apos;,&apos;b&apos;);   // 返回[]; a是[1,2,&apos;a&apos;,&apos;b&apos;,3,4,5]a.splice(2,2,[1,2],3);   // 返回[&apos;a&apos;,&apos;b&apos;]; a是[1,2,[1,2],3,3,4,5]</code></pre><h3 id="7-9-2-map"><a href="#7-9-2-map" class="headerlink" title="7.9.2 map()"></a>7.9.2 map()</h3><p>map()方法将调用的数组的每个元素传递给指定的函数，并返回一个数组，它包含该函数的返回值。例如：</p><pre><code>a = [1,2,3];b = a.map(function(x) {return x*x; });   // b是[1,4,9]</code></pre><h3 id="7-9-5-reduce-和reduceRight"><a href="#7-9-5-reduce-和reduceRight" class="headerlink" title="7.9.5 reduce()和reduceRight()"></a>7.9.5 reduce()和reduceRight()</h3><p>reduce()和reduceRight()方法使用指定的函数将数组元素进行组合，生成单个值。这在函数式编程中是常见的操作，也可以称为“注入”和“折叠”。例如：</p><pre><code>var a  = [1,2,3,4,5];var sum = a.reduce(function(x, y) {return x + y}, 0);     // 数组求和var product = a.reduce(function(x, y) {return x*y}, 1);    // 数组秋积var max = a.reduce(function(x, y) { return (x &gt; y)?x:y; });   // 求最大值</code></pre><p>reduce()需要两个参数。第一个是执行化简操作的函数。化简函数的任务就是用某种方法把两个值组合或化简为一个值，并返回化简后的值。在上述例子中，函数通过加法，乘法或取最大值的方法组合两个值。第二个（可选）的参数是一个传递给函数的初始值。<br>reduceRight()的工作原理和reduce()一样，不同的是它按照数组索引从高到低（从右到左）处理数组。</p><h2 id="7-10-数组类型"><a href="#7-10-数组类型" class="headerlink" title="7.10 数组类型"></a>7.10 数组类型</h2><p>在 ECMAScript 5 中，可以使用Array.isArray()函数来做数组类型的判断：</p><pre><code>Array.isArray([]);   // =&gt; trueArray.isArray({});   // =&gt; false</code></pre><p>在ECMAScript 3 中isArray()函数的代码可以这样写：</p><pre><code>var isArray = Function.isArray || function(o) {    return typeof o === &quot;object&quot; &amp;&amp;     Object.prototype.toString.call(o) === &quot;[object Array]&quot;;};</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;7-2-数组元素的读和写&quot;&gt;&lt;a href=&quot;#7-2-数组元素的读和写&quot; class=&quot;headerlink&quot; title=&quot;7.2 数组元素的读和写&quot;&gt;&lt;/a&gt;7.2 数组元素的读和写&lt;/h2&gt;&lt;p&gt;当使用小于2^32的非负整数作为属性名时数组会自动维护其le
-      
-    
-    </summary>
-    
-      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
-    
-    
-      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
-    
-      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
-    
-  </entry>
-  
-  <entry>
     <title>吉林的秋</title>
     <link href="http://blog.chruyo.com/2016/03/03/autumn_jilin/autumn_jilin/"/>
     <id>http://blog.chruyo.com/2016/03/03/autumn_jilin/autumn_jilin/</id>
@@ -218,6 +218,34 @@
       <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
     
       <category term="摄影" scheme="http://blog.chruyo.com/tags/%E6%91%84%E5%BD%B1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>js深拷贝</title>
+    <link href="http://blog.chruyo.com/2016/03/02/%E6%9D%82%E9%A1%B9/jsClone/"/>
+    <id>http://blog.chruyo.com/2016/03/02/杂项/jsClone/</id>
+    <published>2016-03-01T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="JS深拷贝"><a href="#JS深拷贝" class="headerlink" title="JS深拷贝"></a>JS深拷贝</h2><pre><code>var cloneObj = function(obj){    var str, newobj = obj.constructor === Array ? [] : {};    if(typeof obj !== &apos;object&apos;){        return;    } else if(window.JSON){        str = JSON.stringify(obj), //系列化对象        newobj = JSON.parse(str); //还原    } else {        for(var i in obj){            newobj[i] = typeof obj[i] === &apos;object&apos; ?             cloneObj(obj[i]) : obj[i];         }    }    return newobj;};</code></pre><p>著作权归作者所有。<br>商业转载请联系作者获得授权，非商业转载请注明出处。<br>作者：青大虫<br>链接：<a href="http://www.zhihu.com/question/23031215/answer/31944721" target="_blank" rel="noopener">http://www.zhihu.com/question/23031215/answer/31944721</a><br>来源：知乎</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;JS深拷贝&quot;&gt;&lt;a href=&quot;#JS深拷贝&quot; class=&quot;headerlink&quot; title=&quot;JS深拷贝&quot;&gt;&lt;/a&gt;JS深拷贝&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;var cloneObj = function(obj){
+    var str, newobj 
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
   </entry>
   
@@ -247,34 +275,6 @@
       <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
       <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>js深拷贝</title>
-    <link href="http://blog.chruyo.com/2016/03/02/%E6%9D%82%E9%A1%B9/jsClone/"/>
-    <id>http://blog.chruyo.com/2016/03/02/杂项/jsClone/</id>
-    <published>2016-03-01T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.289Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="JS深拷贝"><a href="#JS深拷贝" class="headerlink" title="JS深拷贝"></a>JS深拷贝</h2><pre><code>var cloneObj = function(obj){    var str, newobj = obj.constructor === Array ? [] : {};    if(typeof obj !== &apos;object&apos;){        return;    } else if(window.JSON){        str = JSON.stringify(obj), //系列化对象        newobj = JSON.parse(str); //还原    } else {        for(var i in obj){            newobj[i] = typeof obj[i] === &apos;object&apos; ?             cloneObj(obj[i]) : obj[i];         }    }    return newobj;};</code></pre><p>著作权归作者所有。<br>商业转载请联系作者获得授权，非商业转载请注明出处。<br>作者：青大虫<br>链接：<a href="http://www.zhihu.com/question/23031215/answer/31944721" target="_blank" rel="noopener">http://www.zhihu.com/question/23031215/answer/31944721</a><br>来源：知乎</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;JS深拷贝&quot;&gt;&lt;a href=&quot;#JS深拷贝&quot; class=&quot;headerlink&quot; title=&quot;JS深拷贝&quot;&gt;&lt;/a&gt;JS深拷贝&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;var cloneObj = function(obj){
-    var str, newobj 
-      
-    
-    </summary>
-    
-      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
-    
-    
-      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
   </entry>
   
