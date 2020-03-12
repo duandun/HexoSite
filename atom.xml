@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Duandun</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://blog.chruyo.com/"/>
+  <updated>2020-03-12T09:52:16.289Z</updated>
+  <id>http://blog.chruyo.com/</id>
+  
+  <author>
+    <name>Duandun JQ</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>给域名续了个费，我又活了</title>
+    <link href="http://blog.chruyo.com/2017/06/18/%E6%9D%82%E9%A1%B9/restart/"/>
+    <id>http://blog.chruyo.com/2017/06/18/杂项/restart/</id>
+    <published>2017-06-17T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<p>给我以前的域名付了个费，我又活啦~~</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;给我以前的域名付了个费，我又活啦~~&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="杂项" scheme="http://blog.chruyo.com/tags/%E6%9D%82%E9%A1%B9/"/>
+    
+      <category term="又活了" scheme="http://blog.chruyo.com/tags/%E5%8F%88%E6%B4%BB%E4%BA%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Chapter 8 函数</title>
+    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_8_Function/"/>
+    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_8_Function/</id>
+    <published>2016-03-19T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.288Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="8-2-4-间接调用"><a href="#8-2-4-间接调用" class="headerlink" title="8.2.4 间接调用"></a>8.2.4 间接调用</h3><p>javascript中的两个方法call()和apply()可以用来间接地调用函数。两个方法都允许显式指定调用所需的this值，也就是说，任何函数可以作为任何对象的方法来调用，哪怕这个函数不是那个对象的方法。call()方法使用它自有的实参列表作为函数的实参，apply()方法则要求以数组的形式传入参数。</p><h2 id="8-6-闭包"><a href="#8-6-闭包" class="headerlink" title="8.6 闭包"></a>8.6 闭包</h2><p>和其他大多数现代编程语言一样，Javascript也采用词法作用域，也就是说，函数的执行依赖于变量作用域，这个作用域是在函数定义时决定的，而不是函数调用时决定的。为了实现这种词法作用域，Javascript函数对象的内部状态不仅包含函数的代码逻辑，还必须引用当前的作用域链。函数对象可以通过作用域链相互关联起来，函数体内部的变量都可以保存在函数作用域内，这种特性被称为“闭包”。<br>从技术的角度上讲，所有的javascript函数都是闭包：它们都是对象，它们都关联到作用域链。</p><pre><code>var scope = &quot;global scope&quot;;      // 全局变量function checkScope() {    var scope = &quot;local scope&quot;;    // 局部变量    function f() { return scope; }   // 在作用域中返回这个值    return f();}checkScope();                      // =&gt; &quot;local scope&quot;</code></pre><p>checkScope() 函数声明了一个局部变量，并定义了一个函数f(),函数f()返回了这个变量的值，最后将函数f()的执行结果返回。你应当非常清楚为什么调用checkScope()会返回”local scope”。现在我们对这段代码做一点改动：</p><pre><code>var scope = &quot;global scope&quot;;function checkScope() {    var scope = &quot;local scope&quot;;    function f() { return scope; }    return f;}checkScope()();         //  依然返回&quot;local scope&quot;</code></pre><p>在这段代码中，我们将函数内的一对圆括号移动到了checkScope()之后。checkScope()现在仅仅返回函数内嵌套的一个函数对象，而不是直接返回结果。<br>回想一下词法作用域的基本规则：javascript函数的执行用到了作用域链，这个作用域链是函数定义的时候创建的。嵌套的函数f()定义在这个作用域链里，其中的变量scope一定是局部变量，不管在何时何地执行函数f()，这种绑定在执行f()时依然有效。因此最后一行代码返回”local scope”。简言之，闭包这个特性强大到让人吃惊：它们可以捕捉到局部变量（和参数），并一直保存下来，看起来像这些变量绑定到了在其中定义它们的外部函数。</p><p><strong>闭包</strong><br>在3.10.3节中定义了作用域链。我们将作用域链描述为一个对象列表，不是绑定的栈。每次调用javascript函数的时候，都会为之创建一个新的对象用来保存局部变量，把这个对象添加至作用域链中。当函数返回的时候，就从作用域链中将这个绑定变量的对象删除。如果不存在嵌套的函数，也没有其他引用指向这个绑定对象，它就会被当做垃圾回收掉。如果定义了嵌套的函数，每个嵌套的函数都各自对应一个作用域链，并且这个作用域链指向一个变量绑定对象。但如果这些嵌套的函数对象在外部函数中保存下来，那么它们也会和所指向的变量绑定对象一样当做垃圾回收。但是如果这个函数定义了嵌套的函数，并将它作为返回值返回或者存储在某处的属性里，这时就会有一个外部引用指向这个嵌套的函数。它就不会被当做垃圾回收，并且它所指向的变量绑定对象也不会被当做垃圾回收。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;8-2-4-间接调用&quot;&gt;&lt;a href=&quot;#8-2-4-间接调用&quot; class=&quot;headerlink&quot; title=&quot;8.2.4 间接调用&quot;&gt;&lt;/a&gt;8.2.4 间接调用&lt;/h3&gt;&lt;p&gt;javascript中的两个方法call()和apply()可以用来间接地调
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Chapter 18 脚本化http</title>
+    <link href="http://blog.chruyo.com/2016/03/20/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_18_httpScript/"/>
+    <id>http://blog.chruyo.com/2016/03/20/《Javascript》权威指南/Chapter_18_httpScript/</id>
+    <published>2016-03-19T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.287Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="18-1-使用XMLHttpRequest"><a href="#18-1-使用XMLHttpRequest" class="headerlink" title="18.1 使用XMLHttpRequest"></a>18.1 使用XMLHttpRequest</h2><p>一个HTTP请求由4部分组成：</p><ul><li>HTTP请求方法或“动作”</li><li>正在请求的URL</li><li>一个可选的请求头集合，其中可能包括身份验证信息</li><li>一个可选的请求主题</li></ul><p>服务器返回的HTTP相应包含3部分：</p><ul><li>一个数字和文字组成的状态吗，用来显示请求的成功和失败</li><li>一个响应头集合</li><li>响应主体</li></ul><p>创建XMLHttpRequest对象之后，发起HTTP请求的下一步是调用XMLHttpRequest对象的open()方法去指定这个请求的两个必须部分：方法和URL</p><pre><code>request.open(&quot;GET&quot;,           // 开始一个HTTP GET请求                &quot;data.csv&quot;)   // URL的内容</code></pre><p>如果有请求头的话，请求进程的下个步骤就是设置它。例如，POST请求需要“Content-Type”头指定请求主题的MIME类型：</p><pre><code>request.setRequestHeader(&quot;Content-Type&quot;, &quot;text/plain&quot;);</code></pre><p>如果对相同的头调用setRequestHeader()多次，新值不会取代之前指定的值，相反，HTTP请求将包含这个头的多个副本或这个头将指定多个值。</p><p>XMLHttpRequest对象通常异步使用：发送请求后，send()方法立即返回，直到响应返回。为了在响应准备就绪时得到通知，必须监听XMLHttpRequest对象上的readystatechange事件。但为了理解这个事件类型，你必须理解readyState属性。<br>readyState是一个整数，它指定了HTTP请求的状态：</p><ul><li>UNSENT     0       open()尚未调用</li><li>OPENED     1       open()已调用</li><li>HEADERS_RECEIVED     2      接收到头信息</li><li>LOADING         3        接收到响应主体</li><li>DONE        4         响应完成</li></ul><p>理论上，每次readyState属性改变都会触发readystatechange事件。</p><pre><code>// 获取HTTP响应的onreadystatechange// 发出一个HTTP GET请求以获得指定URL的内容// 当响应成功到达，验证它是否是纯文本// 如果是，把它传递给指定回调函数function getText(url, callback) {    var request = new XMLHttpRequest();    request.open(&quot;GET&quot;, url);    request.onreadystatechange = function() {        // 如果请求完成，则它是成功的        if(request.readyState === 4 &amp;&amp; request.status === 200) {            var type = request.getResponseHeader(&quot;Content-Type&quot;);            if (type.match(/^text/)) {   // 确保响应是文本                callback(request.responseText);    // 把它传递给回调函数            }        }    };    request.send(null);     // 立即发送请求}</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;18-1-使用XMLHttpRequest&quot;&gt;&lt;a href=&quot;#18-1-使用XMLHttpRequest&quot; class=&quot;headerlink&quot; title=&quot;18.1 使用XMLHttpRequest&quot;&gt;&lt;/a&gt;18.1 使用XMLHttpRequest&lt;/
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Chapter 7 数组</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_7_Array/"/>
+    <id>http://blog.chruyo.com/2016/03/19/《Javascript》权威指南/Chapter_7_Array/</id>
+    <published>2016-03-18T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.288Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="7-2-数组元素的读和写"><a href="#7-2-数组元素的读和写" class="headerlink" title="7.2 数组元素的读和写"></a>7.2 数组元素的读和写</h2><p>当使用小于2^32的非负整数作为属性名时数组会自动维护其length属性值。<br>也可以使用负数或非整数来索引数组。在这种情况下，数值转换为字符串，字符串作为属性名来用。</p><pre><code>a[-1.234] = true;  // 这将创建一个名为&quot;1.234&quot;的属性a[&quot;1000&quot;] = 0;     // 这是数组的第1001个元素a[1.000]           // 和a[1]相等</code></pre><p>事实上数组索引仅仅是对象属性名的一种特殊类型，这意味着javascript数组没有“越界”错误的概念。当试图查询任何对象中不存在的属性时，不会报错，只会得到Undefined值。</p><h2 id="7-3-稀疏数组"><a href="#7-3-稀疏数组" class="headerlink" title="7.3 稀疏数组"></a>7.3 稀疏数组</h2><p>稀疏数组就是包含从0开始的不连续索引的数组。通常，数组的Length属性值代表数组中元素的个数。如何数组是稀疏的，length属性值大于元素的个数。可以用Array()构造函数或简单地指定数组的索引值大于当前的数组长度来创建稀疏数组。</p><pre><code>a = new Array(5);    // 数组没有元素，但是a.length是5a = [];              // 创建一个空数组，length = 0a[1000] = 0;         // 赋值添加一个元素，但是设置Length为1001</code></pre><p>注意，当在数组直接量中省略值时不会创建稀疏数组。省略的元素在数组中是存在的，其值为undefined。这和数组元素根本不存在是有一定微妙的区别的。可以用in操作符检测两者之间的区别：</p><pre><code>var a1 = [,,,];     // 数组是[undefined, undefined, undefined]var a2 = new Array(3);    // 该数组根本没有元素0 in a1             // =&gt; true: a1在索引0处有一个元素0 in a2             // =&gt; false: a2在索引0处没有元素</code></pre><h2 id="7-4-数组长度"><a href="#7-4-数组长度" class="headerlink" title="7.4 数组长度"></a>7.4 数组长度</h2><p>每个数组都有一个Length属性，就是这个属性使其区别于常规的javascript对象。</p><h2 id="7-5-数组元素的添加和删除"><a href="#7-5-数组元素的添加和删除" class="headerlink" title="7.5 数组元素的添加和删除"></a>7.5 数组元素的添加和删除</h2><p>可以像删除对象属性一样使用delete运算符来删除数组元素：</p><pre><code>a = [1,2,3];delete a[1];      // a 在索引1的位置不再有元素1 in a;           // =&gt; false, 数组索引1并未在数组中定义a.length          // =&gt; 3: delete操作并不影响数组长度</code></pre><h2 id="7-6-数组的遍历"><a href="#7-6-数组的遍历" class="headerlink" title="7.6 数组的遍历"></a>7.6 数组的遍历</h2><p>遍历数组的时候，要想排除null、undefined和不存在的元素，如下：</p><pre><code>for(var i = 0; i &lt; a.length; i++) {    if(!a[i]) continue;   // 跳过null、undefined和不存在的元素    // 循环体}</code></pre><p>可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量 。不存在的索引将不会遍历到：</p><pre><code>for(var index in sparseArray) {    var value = sparseArray[index];}</code></pre><h2 id="7-8-数组的函数"><a href="#7-8-数组的函数" class="headerlink" title="7.8 数组的函数"></a>7.8 数组的函数</h2><h3 id="7-8-6-splice"><a href="#7-8-6-splice" class="headerlink" title="7.8.6 splice()"></a>7.8.6 splice()</h3><p>Array.splice()方法是在数组中插入或删除元素的通用方法。<br>splice()的第一个参数制定了插入和（或）删除的起始位置。第二个参数制定了应该从数组中删除的元素的个数。如果省略第二个参数，从起始点开始到数组结尾的所有元素都将被删除。splice()返回一个由删除元素组成的数组，或者如果没有删除元素就返回一个空数组。例如：</p><pre><code>var a = [1,2,3,4,5,6,7,8];a.splice(4);  // 返回[5,6]; a是[1,2,3,4]a.splice(1,2);  // 返回[2,3]; a是[1,4]a.splice(1,1);  // 返回[4]; a是[1]</code></pre><p>splice()的前两个参数指定了需要删除的数组元素。紧随其后的任意个数的参数指定了需要插入到数组中的元素，从第一个参数指定的位置开始插入。例如：</p><pre><code>var a = [1,2,3,4,5];a.splice(2,0,&apos;a&apos;,&apos;b&apos;);   // 返回[]; a是[1,2,&apos;a&apos;,&apos;b&apos;,3,4,5]a.splice(2,2,[1,2],3);   // 返回[&apos;a&apos;,&apos;b&apos;]; a是[1,2,[1,2],3,3,4,5]</code></pre><h3 id="7-9-2-map"><a href="#7-9-2-map" class="headerlink" title="7.9.2 map()"></a>7.9.2 map()</h3><p>map()方法将调用的数组的每个元素传递给指定的函数，并返回一个数组，它包含该函数的返回值。例如：</p><pre><code>a = [1,2,3];b = a.map(function(x) {return x*x; });   // b是[1,4,9]</code></pre><h3 id="7-9-5-reduce-和reduceRight"><a href="#7-9-5-reduce-和reduceRight" class="headerlink" title="7.9.5 reduce()和reduceRight()"></a>7.9.5 reduce()和reduceRight()</h3><p>reduce()和reduceRight()方法使用指定的函数将数组元素进行组合，生成单个值。这在函数式编程中是常见的操作，也可以称为“注入”和“折叠”。例如：</p><pre><code>var a  = [1,2,3,4,5];var sum = a.reduce(function(x, y) {return x + y}, 0);     // 数组求和var product = a.reduce(function(x, y) {return x*y}, 1);    // 数组秋积var max = a.reduce(function(x, y) { return (x &gt; y)?x:y; });   // 求最大值</code></pre><p>reduce()需要两个参数。第一个是执行化简操作的函数。化简函数的任务就是用某种方法把两个值组合或化简为一个值，并返回化简后的值。在上述例子中，函数通过加法，乘法或取最大值的方法组合两个值。第二个（可选）的参数是一个传递给函数的初始值。<br>reduceRight()的工作原理和reduce()一样，不同的是它按照数组索引从高到低（从右到左）处理数组。</p><h2 id="7-10-数组类型"><a href="#7-10-数组类型" class="headerlink" title="7.10 数组类型"></a>7.10 数组类型</h2><p>在 ECMAScript 5 中，可以使用Array.isArray()函数来做数组类型的判断：</p><pre><code>Array.isArray([]);   // =&gt; trueArray.isArray({});   // =&gt; false</code></pre><p>在ECMAScript 3 中isArray()函数的代码可以这样写：</p><pre><code>var isArray = Function.isArray || function(o) {    return typeof o === &quot;object&quot; &amp;&amp;     Object.prototype.toString.call(o) === &quot;[object Array]&quot;;};</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;7-2-数组元素的读和写&quot;&gt;&lt;a href=&quot;#7-2-数组元素的读和写&quot; class=&quot;headerlink&quot; title=&quot;7.2 数组元素的读和写&quot;&gt;&lt;/a&gt;7.2 数组元素的读和写&lt;/h2&gt;&lt;p&gt;当使用小于2^32的非负整数作为属性名时数组会自动维护其le
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>javascript单例模式</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E6%9D%82%E9%A1%B9/javascript%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://blog.chruyo.com/2016/03/19/杂项/javascript单例模式/</id>
+    <published>2016-03-18T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<p>在传统开发工程师眼里，单例就是保证一个类只有一个实例，实现的方法一般是先判断实例存在与否，如果存在直接返回，如果不存在就创建了再返回，这就确保了一个类只有一个实例对象。在JavaScript里，单例作为一个命名空间提供者，从全局命名空间里提供一个唯一的访问点来访问该对象。<br>在JavaScript里，实现单例的方式有很多种，其中最简单的一个方式是使用对象字面量的方法，其字面量里可以包含大量的属性和方法：</p><pre><code>var mySingleton = {    property1: &quot;something&quot;,    property2: &quot;something else&quot;,    method1: function () {        console.log(&apos;hello world&apos;);    }};</code></pre><p>如果以后要扩展该对象，你可以添加自己的私有成员和方法，然后使用闭包在其内部封装这些变量和函数声明。只暴露你想暴露的public成员和方法，样例代码如下：</p><pre><code>var mySingleton = function () {    /* 这里声明私有变量和方法 */    var privateVariable = &apos;something private&apos;;    function showPrivate() {        console.log(privateVariable);    }    /* 公有变量和方法（可以访问私有变量和方法） */    return {        publicMethod: function () {            showPrivate();        },        publicVar: &apos;the public can see this!&apos;    };};var single = mySingleton();single.publicMethod();  // 输出 &apos;something private&apos;console.log(single.publicVar); // 输出 &apos;the public can see this!&apos;</code></pre><p>上面的代码很不错了，但如果我们想做到只有在使用的时候才初始化，那该如何做呢？为了节约资源的目的，我们可以另外一个构造函数里来初始化这些代码，如下：</p><pre><code>var Singleton = (function () {    var instantiated;    function init() {        /*这里定义单例代码*/        return {            publicMethod: function () {                console.log(&apos;hello world&apos;);            },            publicProperty: &apos;test&apos;        };    }    return {        getInstance: function () {            if (!instantiated) {                instantiated = init();            }            return instantiated;        }    };})();/*调用公有的方法来获取实例:*/Singleton.getInstance().publicMethod();</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在传统开发工程师眼里，单例就是保证一个类只有一个实例，实现的方法一般是先判断实例存在与否，如果存在直接返回，如果不存在就创建了再返回，这就确保了一个类只有一个实例对象。在JavaScript里，单例作为一个命名空间提供者，从全局命名空间里提供一个唯一的访问点来访问该对象。&lt;
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="杂项" scheme="http://blog.chruyo.com/tags/%E6%9D%82%E9%A1%B9/"/>
+    
+      <category term="singleton" scheme="http://blog.chruyo.com/tags/singleton/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>null与undefined的区别</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E6%9D%82%E9%A1%B9/null%E4%B8%8Eundefined%E5%8C%BA%E5%88%AB/"/>
+    <id>http://blog.chruyo.com/2016/03/19/杂项/null与undefined区别/</id>
+    <published>2016-03-18T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<p>在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?</p><p>Undefined类型只有一个值，即undefined。当声明的变量还未被初始化时，变量的默认值为undefined。<br>Null类型也只有一个值，即null。null用来表示尚未存在的对象，常用来表示函数企图返回一个不存在的对象。</p><pre><code>var oValue;  alert(oValue == undefined); //output &quot;true&quot;  </code></pre><p>这段代码显示为true,代表oVlaue的值即为undefined，因为我们没有初始化它。</p><pre><code>alert(null == document.getElementById(&apos;notExistElement&apos;));  </code></pre><p>当页面上不存在id为”notExistElement”的DOM节点时，这段代码显示为”true”，因为我们尝试获取一个不存在的对象。</p><pre><code>alert(typeof undefined); //output &quot;undefined&quot;  alert(typeof null); //output &quot;object&quot;  </code></pre><p>第一行代码很容易理解，undefined的类型为Undefined；第二行代码却让人疑惑，为什么null的类型又是Object了呢？其实这是JavaScript最初实现的一个错误，后来被ECMAScript沿用下来。在今天我们可以解释为，null即是一个不存在的对象的占位符，但是在实际编码时还是要注意这一特性。</p><pre><code>alert(null == undefined); //output &quot;true&quot;  </code></pre><p>ECMAScript认为undefined是从null派生出来的，所以把它们定义为相等的。但是，如果在一些情况下，我们一定要区分这两个值，那应该怎么办呢？可以使用下面的两种方法。</p><pre><code>alert(null === undefined); //output &quot;false&quot;  alert(typeof null == typeof undefined); //output &quot;false&quot;  </code></pre><p>使用typeof方法在前面已经讲过，null与undefined的类型是不一样的，所以输出”false”。而===代<br>表绝对等于，在这里null === undefined输出false。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?&lt;/p&gt;
+&lt;p&gt;Undefined类型只有一个值，即undefined。当声明的变量还
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="杂项" scheme="http://blog.chruyo.com/tags/%E6%9D%82%E9%A1%B9/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>吉林的秋</title>
+    <link href="http://blog.chruyo.com/2016/03/03/autumn_jilin/autumn_jilin/"/>
+    <id>http://blog.chruyo.com/2016/03/03/autumn_jilin/autumn_jilin/</id>
+    <published>2016-03-02T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.283Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一些家乡秋景"><a href="#一些家乡秋景" class="headerlink" title="一些家乡秋景"></a>一些家乡秋景</h2><h3 id="白桦林"><a href="#白桦林" class="headerlink" title="白桦林"></a>白桦林</h3><p><img src="/img/autumn_jilin/IMGP2468.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2472.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2533.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2667.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2669.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2671.jpg" alt=""></p><h3 id="路边随拍"><a href="#路边随拍" class="headerlink" title="路边随拍"></a>路边随拍</h3><p><img src="/img/autumn_jilin/IMG_2181.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2182.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2183.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2202.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2263.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2275.jpg" alt=""><br><img src="/img/autumn_jilin/IMG_2321.jpg" alt=""></p><h3 id="龙潭美景"><a href="#龙潭美景" class="headerlink" title="龙潭美景"></a>龙潭美景</h3><p><img src="/img/autumn_jilin/IMGP2908.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2934.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2946.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2968.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2970.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2971.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2974.jpg" alt=""><br><img src="/img/autumn_jilin/IMGP2996.jpg" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;一些家乡秋景&quot;&gt;&lt;a href=&quot;#一些家乡秋景&quot; class=&quot;headerlink&quot; title=&quot;一些家乡秋景&quot;&gt;&lt;/a&gt;一些家乡秋景&lt;/h2&gt;&lt;h3 id=&quot;白桦林&quot;&gt;&lt;a href=&quot;#白桦林&quot; class=&quot;headerlink&quot; title=&quot;白桦林
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="摄影" scheme="http://blog.chruyo.com/tags/%E6%91%84%E5%BD%B1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>js深拷贝</title>
+    <link href="http://blog.chruyo.com/2016/03/02/%E6%9D%82%E9%A1%B9/jsClone/"/>
+    <id>http://blog.chruyo.com/2016/03/02/杂项/jsClone/</id>
+    <published>2016-03-01T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="JS深拷贝"><a href="#JS深拷贝" class="headerlink" title="JS深拷贝"></a>JS深拷贝</h2><pre><code>var cloneObj = function(obj){    var str, newobj = obj.constructor === Array ? [] : {};    if(typeof obj !== &apos;object&apos;){        return;    } else if(window.JSON){        str = JSON.stringify(obj), //系列化对象        newobj = JSON.parse(str); //还原    } else {        for(var i in obj){            newobj[i] = typeof obj[i] === &apos;object&apos; ?             cloneObj(obj[i]) : obj[i];         }    }    return newobj;};</code></pre><p>著作权归作者所有。<br>商业转载请联系作者获得授权，非商业转载请注明出处。<br>作者：青大虫<br>链接：<a href="http://www.zhihu.com/question/23031215/answer/31944721" target="_blank" rel="noopener">http://www.zhihu.com/question/23031215/answer/31944721</a><br>来源：知乎</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;JS深拷贝&quot;&gt;&lt;a href=&quot;#JS深拷贝&quot; class=&quot;headerlink&quot; title=&quot;JS深拷贝&quot;&gt;&lt;/a&gt;JS深拷贝&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;var cloneObj = function(obj){
+    var str, newobj 
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Chapter 6 对象</title>
+    <link href="http://blog.chruyo.com/2016/03/02/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_6_Object/"/>
+    <id>http://blog.chruyo.com/2016/03/02/《Javascript》权威指南/Chapter_6_Object/</id>
+    <published>2016-03-01T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.288Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="6-1-4-Object-create"><a href="#6-1-4-Object-create" class="headerlink" title="6.1.4 Object.create()"></a>6.1.4 Object.create()</h2><p>传入参数null来创建一个没有原型的新对象，但是通过这种方式创建的对象不会继承任何东西，甚至不包括基础方法，比如toString(),也就是说，它将不能和”+”运算符一起正常工作：</p><pre><code>var o2 = Object.create(null);    // o2不继承任何属性和方法</code></pre><p>如果想创建一个普通的空对象（比如通过{}或new Object()创建的对象），需要传入Object.prototype:</p><pre><code>var o3 = Object.create(Object.prototype);    // o3和{}和new Object()一样</code></pre><p>可以通过任意原型创建新对象（换句话说，可以使任意对象可继承）。在ECMAScript 3中可以使用代码来模拟原型继承：</p><pre><code>// inherit(): 返回了一个继承自原型对象p的属性的新对象// 这里使用ECMAScript 5中的Object.create()函数（如果有的话）// 如果不存在Object.create()，则使用其他方法function inherit(p) {    if (p == null) throw TypeError();    if (Object.create) {        return Object.create(p);    }    var t = typeof p;    if (t !== &quot;Object&quot; &amp;&amp; t !== &quot;function&quot;) {        throw TypeError();    }    function f() {};    f.prototype = p;    return new f();}</code></pre><h2 id="6-2-2-继承"><a href="#6-2-2-继承" class="headerlink" title="6.2.2 继承"></a>6.2.2 继承</h2><p>在Javascript中，只有在查询属性时候才会体会到继承的存在，而设置属性则与继承无关，这是Javascript中的一个重要特性，该特性可以让程序员有选择地覆盖（override）继承的属性。</p><pre><code>var unitcircle = { r: 1 };   var c = inherit(unitcircle);  // c继承属性rc.x = 1, c.y = 1;c.r = 2;                      // c覆盖继承来的属性unitcircle.r;                 // =&gt; 1，原型对象没有修改</code></pre><h2 id="6-3-删除属性"><a href="#6-3-删除属性" class="headerlink" title="6.3 删除属性"></a>6.3 删除属性</h2><p>delete只是断开属性和宿主对象的联系，而不会去操作属性中的属性（<span style="color: #ff6026;">例如 a = {p:{x:1}}; b = a.p; delete a.p; 执行这段代码之后b.x的值依然是1。由于已经删除的属性的引用依然存在，因此在Javascript的某些实现中，可能因为这种不严谨的代码而造成内存泄漏，所以在销毁对象的时候，要遍历属性中的属性，依次删除。</span>）：</p><pre><code>delete book.author;    // book中不再有属性authordelete book[&quot;main title&quot;];    // book也不再有属性&quot;main title&quot;</code></pre><p>delete运算符只能删除自有属性，不能删除继承属性。</p><h2 id="6-4-检测属性"><a href="#6-4-检测属性" class="headerlink" title="6.4 检测属性"></a>6.4 检测属性</h2><p>对象的 <strong>hasOwnProperty()</strong> 方法用来检测给定的名字是否是对象的自有属性。对于继承属性它将返回false。<br> <strong>propertyIsEnumerable()</strong> 是 <strong>hasOwnProperty()</strong> 的增强版，只有检测到是自有属性并且这个属性的可枚举性为true时候它才返回true。<br>in运算符用以检测对象的自有属性或继承属性。</p><h2 id="6-5-枚举属性"><a href="#6-5-枚举属性" class="headerlink" title="6.5 枚举属性"></a>6.5 枚举属性</h2><p>for/in循环可以在循环体中遍历对象中所有可枚举的属性（包括自有属性和继承的属性）。除了for/in之外，ECMAScript 5中定义了两个用以枚举属性名称的函数。一个是 <strong>Object.keys()</strong> ，它返回一个数组，这个数组由对象中可枚举的自有属性的名称组成。第二个是 <strong>Object.getOwnPropertyNames()</strong> ，它和 <strong>Object.keys()</strong> 类似，只是它返回对象的所有自有属性的名称，而不仅仅是可枚举的属性。ECMAScript 3中是无法实现类似函数的。</p><h2 id="6-6-属性getter和setter"><a href="#6-6-属性getter和setter" class="headerlink" title="6.6 属性getter和setter"></a>6.6 属性getter和setter</h2><p>当程序查询存取器属性的值时，Javascript调用<strong>getter</strong>方法（无参数），这个方法的返回值就是属性存取表达式的值，当程序设置一个存取器属性的值时，javascript调用<strong>setter</strong>方法，将赋值表达式右侧的值当做参数传入<strong>setter</strong>。<br>如果属性同时具有<strong>getter</strong>和<strong>setter</strong>方法，那么它是一个读/写属性。如果它只有<strong>getter</strong>方法，那么它是一个只读属性。如果它只有<strong>setter</strong>方法，那么它是一个只写属性（数据属性中有一些例外），读取只写属性总是返回undefined。<br>一些使用存取器属性的简单例子：</p><pre><code>// 这个对象产生严格自增的序列号var serialnum = {    // 这个数据属性包含下一个序列号    // $符号暗示这个属性是一个私有属性    $n: 0,    // 返回当前值，然后自增    get next() { return this.$n++; },    // 给n设置新的值，但只有当它比当前值大时才设置成功    set next(n) {        if ( n &gt;= this.$n ) this.$n = n;        else throw &quot;序列号的值不能比当前值小&quot;;    }};// 这个对象可以返回一个随机数var random = {    get octet() { return Math.floor(Math.random()*256); },    get uint16() { return Math.floor(Math.random()*65536); },    get int16() { return Math.floor(Math.random()*65536)-32768; }};</code></pre><h2 id="6-7-属性的特性"><a href="#6-7-属性的特性" class="headerlink" title="6.7 属性的特性"></a>6.7 属性的特性</h2><p>数据属性的四个特性分别为它的值(value)，可写性(writable)，可枚举性(enumerable)和可配置性(configurable)。<br>通过调用<strong>Object.getOwnPropertyDescriptor()</strong> 可以获得某个对象特定属性的属性描述符：</p><pre><code>// 对于继承属性和不存在的属性，返回undefinedObject.getOwnPropertyDescriptor({}, &quot;x&quot;);    // undefined, 没有这个属性Object.getOwnPropertyDescriptor({}, &quot;toString&quot;);   // undefined, 继承属性</code></pre><p>要想获得继承属性的特性，需要遍历原型链（Object.getPrototypeOf()）。<br>要想设置属性的特性，或者想让新建属性具有某种特性，则需要调用<strong>Object.defineProperty()</strong> ：</p><pre><code>var o = {};Object.defineProperty(o, &quot;x&quot;, { value: 1,                                writable: true,                                enumerable: true,                                configurable: true});</code></pre><p>如果要同时修改或创建多个属性，则需要使用<strong>Object.defineProperties()</strong>。</p><pre><code>var p = Object.defineProperties({}, {        x: {value: 1, writable: true, enumerable: false, configurable: true},        y: {value: 2, writable: false, enumerable: false, configurable: true}    });</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;6-1-4-Object-create&quot;&gt;&lt;a href=&quot;#6-1-4-Object-create&quot; class=&quot;headerlink&quot; title=&quot;6.1.4 Object.create()&quot;&gt;&lt;/a&gt;6.1.4 Object.create()&lt;/h2&gt;&lt;
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Angularjs Tutorial-step0</title>
+    <link href="http://blog.chruyo.com/2015/08/10/angularjs-tutorial/step0/"/>
+    <id>http://blog.chruyo.com/2015/08/10/angularjs-tutorial/step0/</id>
+    <published>2015-08-09T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.282Z</updated>
+    
+    <content type="html"><![CDATA[<p><em>注：本系列文章翻译自Angularjs官方范例教程，本人英语三级未过，翻译能力有限，附上原版网址：<a href="http://docs.angularjs.cn" target="_blank" rel="noopener">http://docs.angularjs.cn</a></em></p><h2 id="PhoneCat-Tutorial-App"><a href="#PhoneCat-Tutorial-App" class="headerlink" title="PhoneCat Tutorial App"></a>PhoneCat Tutorial App</h2><p>通过这个简单的教程，能够使你更加清晰地了解Angularjs网页应用的构成。跟随这个教程，你将会完成一个能展示手机列表的网页应用，这个应用包含关键字搜索，查看详情页等功能。<br><img src="/img/angularjs_tutorial/catalog_screen.png" alt=""><br>通过这个简单的教程，你将会发现Angular可以在完全不需要任何本地扩展和插件的情况下，让网页应用变得如此美妙：</p><ul><li>通过使用客户端的 data binding 来绑定动态视图的数据，这样数据就能够实时地将用户的操作反应出来</li><li>Angular可以在不借助DOM操作的情况下同步你视图的变化</li><li>使用 <a href="http://karma-runner.github.io/0.13/index.html" target="_blank" rel="noopener">Karma</a> 和 <a href="http://www.protractortest.org" target="_blank" rel="noopener">Protractor</a> 使你的测试变得更加简单，高效</li><li>Angular使用依赖注入和大量的服务来创建通用的模块，这将使构建代码更加容易</li></ul><p>当你完成了这个教程后，你将会get如下技能：</p><ul><li>制作一个适用于所有流行浏览器的动态网页应用</li><li>使用 data binding 将你的数据模型装配到你的视图中</li><li>使用 Karma 来创建和运行单元测试</li><li>使用 Protractor 来创建和运行端到端测试（<a href="http://www.exforsys.com/tutorials/testing-types/end-to-end-testing.html" target="_blank" rel="noopener">end to end tests</a>）</li><li>将应用逻辑从模板和控制层抽离出去</li><li>使用Angular services从服务端获取数据</li><li>使用 ngAnimate 创建应用动画效果</li></ul><p>此教程将按步骤引导你构建一个简单的应用，其中包括书写和运行单元测试与端到端测试。在每一个步骤的最后会有一些实验，提供些建议来帮助你更深入的学习Angularjs。</p><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>本教程使用 <a href="http://git-scm.com" target="_blank" rel="noopener">Git</a> 作为代码版本控制工具，对于Git，你只需要懂得如何进行安装和一些简单的git命令即可。</p><h3 id="安装-Git"><a href="#安装-Git" class="headerlink" title="安装 Git"></a>安装 Git</h3><p>你可以从Git的官方网站上下载 <a href="http://git-scm.com/download。" target="_blank" rel="noopener">http://git-scm.com/download。</a> 当安装完Git后，就可以使用 <code>git</code> 的命令行工具了。在本教程中，你将会频繁使用到如下两个命令：</p><ul><li><code>git clone ...</code> ：克隆一个远程项目到你本地</li><li><code>git checkout ...</code> ：检出一个 <code>branch</code> 或是某个具体的版本</li></ul><h3 id="下载-angular-phonecat"><a href="#下载-angular-phonecat" class="headerlink" title="下载 angular-phonecat"></a>下载 angular-phonecat</h3><p>在终端运行如下语句来克隆 Github 上的 <a href="https://github.com/angular/angular-phonecat" target="_blank" rel="noopener">angular-phonecat repository</a> ：</p><pre><code>git clone --depth=14 https://github.com/angular/angular-phonecat.git</code></pre><p>这条命令在你的当前目录下创建了 <code>angular-phonecat</code> 项目。</p><blockquote><p><code>--depth=14</code> 选项告知Git仅下载最新的14次commits，这会让下载的文件更少，速度也就相应提高了。</p></blockquote><p>切换到 <code>angular-phonecat</code> 的目录下。</p><pre><code>cd angular-phonecat</code></pre><p>确保在接下来的操作中，你都是在目录 <code>angular-phonecat</code> 下。</p><h3 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h3><p>Node.js的官网下载地址如下： <a href="http://nodejs.org/download/" target="_blank" rel="noopener">http://nodejs.org/download/</a> 。<br>检查你所安装的 Node.js 版本：</p><pre><code>node --version</code></pre><p>在 Debian 系统中，<code>node</code> 会有命名冲突。建议安装 <code>nodejs-legacy</code> 。</p><pre><code>apt-get install nodejs-legacy npm nodejs --versionnpm --version</code></pre><blockquote><p>如果你想在本地环境中运行多个版本的 node.js, 你可以安装 <a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">Node Version Manager (nvm)</a> 。</p></blockquote><p>安装完 Node.js 后，就可以下载依赖包了：</p><pre><code>npm install</code></pre><p>这条命令会下载以下几个工具包到 <code>node_modules</code> 文件夹下：</p><ul><li><a href="http://bower.io/" target="_blank" rel="noopener">Bower</a> - 代码包管理工具</li><li><a href="https://github.com/nodeapps/http-server" target="_blank" rel="noopener">Http-Server</a> - 小巧的静态网页服务端</li><li><a href="https://github.com/karma-runner/karma" target="_blank" rel="noopener">Karma</a> - 单元测试环境</li><li><a href="https://github.com/angular/protractor" target="_blank" rel="noopener">Protractor</a> - 端到端测试环境</li></ul><p>执行 <code>npm install</code> 语句会自动使用 bower 来下载Angular框架到 <code>app/bower_components</code> 文件夹下。<br>项目已经预先定义好了许多npm脚本用来执行一些在开发中通用的功能：</p><ul><li><code>npm start</code>：运行一个本地的web-server</li><li><code>npm test</code>：开始 Karma 单元测试</li><li><code>npm run protractor</code>：开始 Protractor 的端到端测试</li><li><code>npm run update-webdriver</code>：安装 Protractor 所需要的驱动</li></ul><h3 id="安装辅助工具"><a href="#安装辅助工具" class="headerlink" title="安装辅助工具"></a>安装辅助工具</h3><p>安装bower工具</p><pre><code>sudo npm install -g bower</code></pre><p>在windows系统中，请忽略 sudo<br>运行bower工具：</p><pre><code>bower install</code></pre><h3 id="运行开发环境"><a href="#运行开发环境" class="headerlink" title="运行开发环境"></a>运行开发环境</h3><p>由于Angular应用是运行在客户端的应用，所以我们可以直接在文件系统中将网页打开，但还是在web server中打开比较好，尤其，出于安全的考虑，大多数的浏览器不会允许Javascript请求运行在文件系统中。<br>运行phonecat项目的命令如下：</p><pre><code>npm start</code></pre><p>这样，在你本地的机器上，服务器开始监听8000端口。你可以在浏览器中输入如下网址便可以访问了：</p><pre><code>http://localhost:8000/app/index.html</code></pre><blockquote><p>想要让应用运行在其他ip地址或是端口，可以修改在package.json中的”start”脚本，你可以使用 <code>-a</code> 来设置ip地址，使用 <code>-p</code> 来设置端口。</p></blockquote><h3 id="运行单元测试"><a href="#运行单元测试" class="headerlink" title="运行单元测试"></a>运行单元测试</h3><p>在实际开发过程中，我们经常使用单元测试来验证我们的JS代码运行是否正确。单元测试专注于测试分离出来的小模块。在本项目中，所有的单元测试均在 <code>test/unit</code> 目录下。</p><p>本项目使用 Karma 来运行单元测试：</p><pre><code>npm test</code></pre><p>Karma 会读取 <code>test/karma.conf.js</code> 中的配置信息，配置信息中包括：</p><ul><li>打开一个Chrome 浏览器并连接到Karma</li><li>在这个浏览器中执行所有的单元测试</li><li>在终端命令行中返回测试结果</li><li>监测项目中的所有 Javascript 文件，如有文件变化，则重新启动测试</li></ul><p>最好在后台一直运行Karma，这样在你进行代码修改的时候，就能马上得到测试的反馈。</p>]]></content>
+    
+    <summary type="html">
+    
+      通过这个简单的教程，能够使你更加清晰地了解Angularjs网页应用的构成。跟随这个教程，你将会完成一个能展示手机列表的网页应用，这个应用包含关键字搜索，查看详情页等功能。
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="angularjs" scheme="http://blog.chruyo.com/tags/angularjs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Html5完成客户端扫描识别二维码</title>
+    <link href="http://blog.chruyo.com/2015/08/06/html5Camera/"/>
+    <id>http://blog.chruyo.com/2015/08/06/html5Camera/</id>
+    <published>2015-08-05T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.286Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近由于项目的需要，领导想要做一个类似授权模块的东西，通过这个模块，允许用户授权给第三方应用或是网站来访问其存储在其他网站（应用）上的特定信息，这种授权方式被成为 <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">oAuth2.0</a>，被大量应用在微博，微信等应用和网站，论坛中。在开发过程中，领导想要通过扫二维码的方式来进行令牌（token）的获取和身份的认证，为简化操作和开发过程，决定使用 Html5 来实现这一扫码功能。</p><a id="more"></a><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul><li>两部测试机：iphone5s + galaxy s4</li><li>测试浏览器：Chrome in Android, UC in Android, Safari in iphone5s</li><li>web环境：Nodejs + bootstrap3 </li><li>工具库：jsqrcode, jquery-qrcode</li></ul><p>由于手头就两部手机，所以这两部就分别作为IOS和Android测试机器。对于 html5 中新增标签和 api 的浏览器支持情况，可以访问如下网站查询： <a href="http://caniuse.com/" target="_blank" rel="noopener">http://caniuse.com/</a> 。</p><p>由于研究时间有限，所以就先找来支持情况比较好的 Chrome 和 UC 浏览器作为测试浏览器，在iphone5s中则使用原生浏览器 Safari 。</p><p>扫码工作主要在前端进行，后端主要进行数据的处理和路由发送信息，所以没有必要再去搭建一个整套的 MVC 框架来运行应用（确实我对后端的技术也不是很了解），这里采用比较偷懒的自动搭建了一个 nodejs web环境，用来模拟服务器端。</p><p>样式采用了<a href="http://v3.bootcss.com/" target="_blank" rel="noopener">bootstrap3</a>框架（只是简单应用了一些栅格系统和按钮，让这个demo不会显得太挫）。</p><p><a href="https://github.com/LazarSoft/jsqrcode" target="_blank" rel="noopener">jsqrcode</a> 是 <a href="https://github.com/zxing/zxing" target="_blank" rel="noopener">zxing qrcode scanner</a> 的一个javascript移植，应用这个库就可以在客户端进行二维码的识别工作了！<a href="http://jeromeetienne.github.io/jquery-qrcode/" target="_blank" rel="noopener">jquery-qrcode</a> 是 <a href="http://jquery.com/" target="_blank" rel="noopener">jquery</a> 的一个插件，用来生成二维码的工具库。</p><h2 id="使用express-generator初始化一个项目"><a href="#使用express-generator初始化一个项目" class="headerlink" title="使用express-generator初始化一个项目"></a>使用express-generator初始化一个项目</h2><p>首先要安装 <code>express-generator</code><br>使用 <code>npm</code> 来进行安装：</p><pre><code>sudo npm install -g express-generator</code></pre><p>windows 用户不需要键入 <code>sudo</code> </p><p>安装完 <code>express-generator</code> 后，执行以下命令：</p><pre><code>express ejs myapp</code></pre><p>这样就在当前目录下生成了一个名叫myapp 的 express项目了。这个项目以 <code>ejs</code> 作为模板，关于 <code>ejs</code> 的使用，请移步： <a href="http://www.embeddedjs.com/" target="_blank" rel="noopener">http://www.embeddedjs.com/</a><br>该项目的目录结构如下：<br><img src="/img/html5/tree_content.png" alt=""></p><p>对于其具体的运行过程和各个文件的作用，请移步 <a href="https://cnodejs.org/" target="_blank" rel="noopener">nodejs社区</a> 进行学习，在这里，我们输入以下命令来安装相关的依赖包</p><pre><code>npm install</code></pre><p>在下载完相关包后，键入命令：</p><pre><code>npm start</code></pre><p>就可以看到项目已经开始运行了。<br><img src="/img/html5/npm_start.png" alt=""></p><p>这时候，在浏览器中输入网址 <a href="http://localhost:3000/" target="_blank" rel="noopener">http://localhost:3000/</a> 便能看到网站正在运行了！<br><img src="/img/html5/running.png" alt=""></p><h2 id="言归正传"><a href="#言归正传" class="headerlink" title="言归正传"></a>言归正传</h2><p>如今二维码已经深入到我们的生活当中，支付宝中的二维码支付，微信中的“扫一扫”，手机应用app的下载也有很多采用了二维码扫描的方式。相比较于过去经常使用的条形码，二维码拥有很多优势：</p><ul><li>数据容量大（一维条形码仅能最多存储30个字符左右，二维码则最多可容纳1850个大写字母或2710个数字或1108个字节，或500多个汉字）</li><li>超越了字母数字的限制（一维条形码仅能包含字母和数字，而二维码可以包含汉字，图片，声音，签字，指纹等信息）</li><li>条码相对尺寸比较小</li><li>具有抗损伤能力（二维码在因为穿孔、污损等引起局部损坏时，照样可以被正确识别）</li><li>译码可靠性高（二维码比普通一维条形码译码错误率百万分之二要低得多，误码率不超过千万分之一）</li><li>可以引入加密措施</li><li>符号性状，尺寸大小可变</li></ul><h3 id="说了这么多，也该开始正题了"><a href="#说了这么多，也该开始正题了" class="headerlink" title="说了这么多，也该开始正题了"></a>说了这么多，也该开始正题了</h3><p>首先使用 <code>bower</code> 来下载对应要使用的工具库，配置 <code>.bowerrc</code> ，在项目根目录下创建一个叫 <code>.bowerrc</code> 的文件，输入以下代码：</p><pre><code>{    &quot;directory&quot;: &quot;public/libs&quot;}</code></pre><p>这句话表示你的静态文件所在的目录。</p><p>在终端中输入如下命令：</p><pre><code>bower install jsqrcode, jquery-qrcode, bootstrap --save</code></pre><p>这样所需要的依赖库就都下载完毕了。</p><p>在项目目录下的 <code>views</code> 目录下创建文件 <code>qrcode.ejs</code> ，并在 <code>routes</code> 目录下的 <code>index.js</code> 文件中添加如下语句：</p><pre><code>router.get(&apos;/qr&apos;, function(req, res, next) {    res.render(&apos;qrcode&apos;);});</code></pre><p>这样，在浏览器中输入 <a href="http://localhost:3000/qr" target="_blank" rel="noopener">http://localhost:3000/qr</a> ，便能跳转到 <code>qrcode.ejs</code> 页面并渲染。</p><p>我们的主要程序都是写在 <code>qrcode.ejs</code> 文件中。<br>由于是在手机端的 webapp， 所以需要添加如下语句来使得页面适应手机端的浏览器</p><pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui&quot;&gt;</code></pre><p>加入用于解析二维码的js库文件（一大堆）</p><pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/js/grid.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/version.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/detector.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/formatinf.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/errorlevel.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bitmat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datablock.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bmparser.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datamask.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/rsdecoder.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256poly.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/decoder.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/qrcode.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/findpat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/alignpat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/databr.js&quot;&gt;&lt;/script&gt;</code></pre><p>由于需要在网页中调用手机摄像头，这样就需要使用 html5 中提供的一些新的 api，在这里需要使用 <code>getUserMedia</code> 和 <code>MediaStreamTrack</code> 两个函数。其中， <code>getUserMedia</code> 可以获取当前设备的摄像头和音频设备，<code>MediaStreamTrack</code> 用来获取当前设备音频和视频源（如获取手机多个摄像头的<code>Id</code>）。</p><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>使用 <code>video</code> 标签来显示当前设备的视频图像，将图像绘制在 <code>canvas</code> 标签中，再使用二维码解析库解析 <code>canvas</code>。</p><p><span style="color:red;font-size:80%;">注：该实例仅适用于 Android 手机的 chrome 浏览器（或UC浏览器），由于浏览器的原因，在UC浏览器中的效果不是很好</span></p><p>代码如下：   </p><pre><code>&lt;!DOCTYPE HTML&gt;  &lt;html&gt;  &lt;head&gt;  &lt;title&gt;授权页面&lt;/title&gt;  &lt;meta charset=&quot;utf-8&quot;&gt;  &lt;meta name=&quot;mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui&quot;&gt;&lt;meta name=&quot;author&quot; content=&quot;duandun&quot;&gt;&lt;link rel=&apos;stylesheet&apos; href=&apos;/libs/bootstrap/dist/css/bootstrap.css&apos; /&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/libs/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/libs/bootstrap/dist/js/bootstrap.js&quot;&gt;&lt;/script&gt; &lt;!-- &lt;script type=&quot;text/javascript&quot; src=&quot;/libs/angularjs/angular.js&quot;&gt;&lt;/script&gt; --&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/grid.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/version.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/detector.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/formatinf.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/errorlevel.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bitmat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datablock.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bmparser.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datamask.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/rsdecoder.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256poly.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/decoder.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/qrcode.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/findpat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/alignpat.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/databr.js&quot;&gt;&lt;/script&gt;&lt;style&gt;    #qr-canvas {        position: relative;        top: -200px;        z-index: 2000;    }    .row {        margin-bottom: -20px;    }&lt;/style&gt;&lt;/head&gt;  &lt;body class=&quot;container text-center&quot; &gt;  &lt;div class=&quot;row&quot; &gt;    &lt;video id=&quot;video&quot; width=&quot;300&quot; height=&quot;300&quot; autoplay&gt;&lt;/video&gt;        &lt;/div&gt;&lt;canvas id=&quot;qr-canvas&quot; width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/canvas&gt;&lt;div class=&quot;row&quot;&gt;    &lt;div class=&quot;col-xs-6&quot;&gt;        &lt;canvas id=&quot;canvasA&quot; width=&quot;100&quot; height=&quot;100&quot; &gt;&lt;/canvas&gt;        &lt;input type=&quot;hidden&quot; id=&quot;inputA&quot;  &gt;    &lt;/div&gt;    &lt;div class=&quot;col-xs-6&quot;&gt;        &lt;canvas id=&quot;canvasB&quot; width=&quot;100&quot; height=&quot;100&quot; &gt;&lt;/canvas&gt;        &lt;input type=&quot;hidden&quot; id=&quot;inputB&quot; &gt;    &lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;row&quot;&gt;    &lt;div class=&quot;col-xs-4&quot;&gt;        &lt;a type=&quot;button&quot; value=&quot;授权机&quot; id=&quot;btn1&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot;&gt;授权机&lt;/a&gt;    &lt;/div&gt;    &lt;div class=&quot;col-xs-4&quot;&gt;        &lt;a type=&quot;button&quot; id=&quot;send&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot; onclick=&quot;javascript:send();&quot; disabled=&quot;disabled&quot;&gt;登陆&lt;/a&gt;    &lt;/div&gt;    &lt;div class=&quot;col-xs-4&quot;&gt;        &lt;a type=&quot;button&quot; value=&quot;被授权机&quot; id=&quot;btn2&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot;&gt;被授权机&lt;/a&gt;      &lt;/div&gt;   &lt;/div&gt;&lt;script type=&quot;text/javascript&quot;&gt; // Put event listeners into placefunction send() {alert($(&quot;#inputA&quot;).val() + &quot;   &quot; + $(&quot;#inputB&quot;).val());}window.addEventListener(&quot;DOMContentLoaded&quot;, function() {// Grab elements, create settings, etc.var canvas = document.getElementById(&quot;qr-canvas&quot;),    context = canvas.getContext(&quot;2d&quot;),    video = document.getElementById(&quot;video&quot;),     videoArray = [],    btn1 = document.getElementById(&quot;btn1&quot;),    btn2 = document.getElementById(&quot;btn2&quot;),    canvasA = document.getElementById(&quot;canvasA&quot;),    canvasB = document.getElementById(&quot;canvasB&quot;),    errBack = function(error) {        console.log(&quot;Video capture error: &quot;, error.code);     };// 获取设备的媒体数据navigator.getUserMedia = navigator.getUserMedia ||    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;// 将canvas图像转换为黑白图片function imageConvertToGray(ctx){     var length = canvas.width * canvas.height,        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);     for (var i = 0; i &lt; length * 4; i += 4) {         var myRed = imageData.data[i];         var myGreen = imageData.data[i + 1];         var myBlue = imageData.data[i + 2];         myGray = parseInt((myRed + myGreen + myBlue) / 3);         imageData.data[i] = myGray;         imageData.data[i + 1] = myGray;         imageData.data[i + 2] = myGray;     }     ctx.putImageData(imageData, 0, 0); } // 获取设备的摄像头信息idfunction gotSources(sourceInfos) {  for (var i = 0; i !== sourceInfos.length; ++i) {    var sourceInfo = sourceInfos[i];    if (sourceInfo.kind === &apos;video&apos;) {      videoArray.push(sourceInfo.id);      // alert(videoArray);    } else {      console.log(&apos;Some other kind of source: &apos;, sourceInfo);    }  }  var constraints = {        video: {          optional: [{            sourceId: videoArray[1]          }]        }    };  start(constraints);}// 进行扫描任务function scan() {    if (typeof MediaStreamTrack === &apos;undefined&apos; ||        typeof MediaStreamTrack.getSources === &apos;undefined&apos;) {        alert(&apos;This browser does not support MediaStreamTrack.\n\nTry Chrome.&apos;);        var constraints = {            video: true        };        start(constraints);    } else {      MediaStreamTrack.getSources(gotSources);    } } // function successCallback(stream) {  window.stream = stream; // make stream available to console  video.src = window.URL.createObjectURL(stream);  video.play();}function errorCallback(error) {  console.log(&apos;navigator.getUserMedia error: &apos;, error);}// 扫描二维码事件function recEvent(canvasDis) {    var $input, btn;    if (canvasDis.getAttribute(&quot;id&quot;)===&quot;canvasA&quot;) {            $input = $(&quot;#inputA&quot;);            btn = document.getElementById(&quot;btn1&quot;);    } else if (canvasDis.getAttribute(&quot;id&quot;)===&quot;canvasB&quot;) {            $input = $(&quot;#inputB&quot;);            btn = document.getElementById(&quot;btn2&quot;);    }    contextDis = canvasDis.getContext(&quot;2d&quot;);    // 每20毫秒取一个图像并进行二维码解析    window.i = setInterval(function() {          //  context.drawImage(video, 140,220,200,200,0,0,200,200);          context.drawImage(video, 140,220,300,300,0,0,200,200);            //为提高速度，可以不转换为黑白图像           // imageConvertToGray(context);             try{                 qrcode.callback = function(data) {                    alert(data);                    console.log(&apos;the data is : &apos; + data);                    // 解析成功后，将解析得到的数据传入到对应隐藏域中                    $input.val(data);                    if ($(&quot;#inputA&quot;).val() &amp;&amp; $(&quot;#inputB&quot;).val()) {                        $(&quot;#send&quot;).removeAttr(&quot;disabled&quot;);                    }                    video.pause();                    contextDis.putImageData(context.getImageData(0,0,canvas.width, canvas.height),0,0);                    context.clearRect(0,0,200,200);                     btn.style.backgroundColor = &apos;#CC6633&apos;;                    btn.style.borderColor = &apos;#CC6633&apos;;                    };                 qrcode.decode();                            } catch(e) {                               console.log(&apos;unable to read qr code&apos;);                }        }, 20);}// 绑定授权机按钮事件video.addEventListener(&apos;pause&apos;, function() {        clearInterval(i);});// 绑定授权机按钮事件btn1.addEventListener(&apos;click&apos;, function() {    $(video).one(&apos;play&apos;, function() {        recEvent(canvasA);    });    this.setAttribute(&apos;style&apos;, &apos;&apos;);    scan();});// 绑定被授权机按钮事件btn2.addEventListener(&apos;click&apos;, function() {    $(video).one(&apos;play&apos;, function() {        recEvent(canvasB);    });      this.setAttribute(&apos;style&apos;, &apos;&apos;);     scan();});function start(constraints) {  if (!!window.stream) {    video.src = null;    window.stream.stop();  }    navigator.getUserMedia(constraints, successCallback, errorCallback);}}, false);&lt;/script&gt;  &lt;/body&gt;  &lt;/html&gt;  </code></pre><h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p><img src="/img/html5/demo.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近由于项目的需要，领导想要做一个类似授权模块的东西，通过这个模块，允许用户授权给第三方应用或是网站来访问其存储在其他网站（应用）上的特定信息，这种授权方式被成为 &lt;a href=&quot;http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;oAuth2.0&lt;/a&gt;，被大量应用在微博，微信等应用和网站，论坛中。在开发过程中，领导想要通过扫二维码的方式来进行令牌（token）的获取和身份的认证，为简化操作和开发过程，决定使用 Html5 来实现这一扫码功能。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="分享" scheme="http://blog.chruyo.com/tags/%E5%88%86%E4%BA%AB/"/>
+    
+      <category term="html5" scheme="http://blog.chruyo.com/tags/html5/"/>
+    
+      <category term="qrcode" scheme="http://blog.chruyo.com/tags/qrcode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Angularjs Tutorial</title>
+    <link href="http://blog.chruyo.com/2015/08/01/angularjs-tutorial/prepare/"/>
+    <id>http://blog.chruyo.com/2015/08/01/angularjs-tutorial/prepare/</id>
+    <published>2015-07-31T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.280Z</updated>
+    
+    <content type="html"><![CDATA[<p><em>注：本系列文章翻译自Angularjs官方范例教程，本人英语三级未过，翻译能力有限，附上原版网址：<a href="http://docs.angularjs.cn" target="_blank" rel="noopener">http://docs.angularjs.cn</a></em></p><h2 id="PhoneCat-Tutorial-App"><a href="#PhoneCat-Tutorial-App" class="headerlink" title="PhoneCat Tutorial App"></a>PhoneCat Tutorial App</h2><p>通过这个简单的教程，能够使你更加清晰地了解Angularjs网页应用的构成。跟随这个教程，你将会完成一个能展示手机列表的网页应用，这个应用包含关键字搜索，查看详情页等功能。<br><img src="/img/angularjs_tutorial/catalog_screen.png" alt=""><br>通过这个简单的教程，你将会发现Angular可以在完全不需要任何本地扩展和插件的情况下，让网页应用变得如此美妙：</p><ul><li>通过使用客户端的 data binding 来绑定动态视图的数据，这样数据就能够实时地将用户的操作反应出来</li><li>Angular可以在不借助DOM操作的情况下同步你视图的变化</li><li>使用 <a href="http://karma-runner.github.io/0.13/index.html" target="_blank" rel="noopener">Karma</a> 和 <a href="http://www.protractortest.org" target="_blank" rel="noopener">Protractor</a> 使你的测试变得更加简单，高效</li><li>Angular使用依赖注入和大量的服务来创建通用的模块，这将使构建代码更加容易</li></ul><p>当你完成了这个教程后，你将会get如下技能：</p><ul><li>制作一个适用于所有流行浏览器的动态网页应用</li><li>使用 data binding 将你的数据模型装配到你的视图中</li><li>使用 Karma 来创建和运行单元测试</li><li>使用 Protractor 来创建和运行端到端测试（<a href="http://www.exforsys.com/tutorials/testing-types/end-to-end-testing.html" target="_blank" rel="noopener">end to end tests</a>）</li><li>将应用逻辑从模板和控制层抽离出去</li><li>使用Angular services从服务端获取数据</li><li>使用 ngAnimate 创建应用动画效果</li></ul><p>此教程将按步骤引导你构建一个简单的应用，其中包括书写和运行单元测试与端到端测试。在每一个步骤的最后会有一些实验，提供些建议来帮助你更深入的学习Angularjs。</p><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>本教程使用 <a href="http://git-scm.com" target="_blank" rel="noopener">Git</a> 作为代码版本控制工具，对于Git，你只需要懂得如何进行安装和一些简单的git命令即可。</p><h3 id="安装-Git"><a href="#安装-Git" class="headerlink" title="安装 Git"></a>安装 Git</h3><p>你可以从Git的官方网站上下载 <a href="http://git-scm.com/download。" target="_blank" rel="noopener">http://git-scm.com/download。</a> 当安装完Git后，就可以使用 <code>git</code> 的命令行工具了。在本教程中，你将会频繁使用到如下两个命令：</p><ul><li><code>git clone ...</code> ：克隆一个远程项目到你本地</li><li><code>git checkout ...</code> ：检出一个 <code>branch</code> 或是某个具体的版本</li></ul><h3 id="下载-angular-phonecat"><a href="#下载-angular-phonecat" class="headerlink" title="下载 angular-phonecat"></a>下载 angular-phonecat</h3><p>在终端运行如下语句来克隆 Github 上的 <a href="https://github.com/angular/angular-phonecat" target="_blank" rel="noopener">angular-phonecat repository</a> ：</p><pre><code>git clone --depth=14 https://github.com/angular/angular-phonecat.git</code></pre><p>这条命令在你的当前目录下创建了 <code>angular-phonecat</code> 项目。</p><blockquote><p><code>--depth=14</code> 选项告知Git仅下载最新的14次commits，这会让下载的文件更少，速度也就相应提高了。</p></blockquote><p>切换到 <code>angular-phonecat</code> 的目录下。</p><pre><code>cd angular-phonecat</code></pre><p>确保在接下来的操作中，你都是在目录 <code>angular-phonecat</code> 下。</p><h3 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h3><p>Node.js的官网下载地址如下： <a href="http://nodejs.org/download/" target="_blank" rel="noopener">http://nodejs.org/download/</a> 。<br>检查你所安装的 Node.js 版本：</p><pre><code>node --version</code></pre><p>在 Debian 系统中，<code>node</code> 会有命名冲突。建议安装 <code>nodejs-legacy</code> 。</p><pre><code>apt-get install nodejs-legacy npm nodejs --versionnpm --version</code></pre><blockquote><p>如果你想在本地环境中运行多个版本的 node.js, 你可以安装 <a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">Node Version Manager (nvm)</a> 。</p></blockquote><p>安装完 Node.js 后，就可以下载依赖包了：</p><pre><code>npm install</code></pre><p>这条命令会下载以下几个工具包到 <code>node_modules</code> 文件夹下：</p><ul><li><a href="http://bower.io/" target="_blank" rel="noopener">Bower</a> - 代码包管理工具</li><li><a href="https://github.com/nodeapps/http-server" target="_blank" rel="noopener">Http-Server</a> - 小巧的静态网页服务端</li><li><a href="https://github.com/karma-runner/karma" target="_blank" rel="noopener">Karma</a> - 单元测试环境</li><li><a href="https://github.com/angular/protractor" target="_blank" rel="noopener">Protractor</a> - 端到端测试环境</li></ul><p>执行 <code>npm install</code> 语句会自动使用 bower 来下载Angular框架到 <code>app/bower_components</code> 文件夹下。<br>项目已经预先定义好了许多npm脚本用来执行一些在开发中通用的功能：</p><ul><li><code>npm start</code>：运行一个本地的web-server</li><li><code>npm test</code>：开始 Karma 单元测试</li><li><code>npm run protractor</code>：开始 Protractor 的端到端测试</li><li><code>npm run update-webdriver</code>：安装 Protractor 所需要的驱动</li></ul><h3 id="安装辅助工具"><a href="#安装辅助工具" class="headerlink" title="安装辅助工具"></a>安装辅助工具</h3><p>安装bower工具</p><pre><code>sudo npm install -g bower</code></pre><p>在windows系统中，请忽略 sudo<br>运行bower工具：</p><pre><code>bower install</code></pre><h3 id="运行开发环境"><a href="#运行开发环境" class="headerlink" title="运行开发环境"></a>运行开发环境</h3><p>由于Angular应用是运行在客户端的应用，所以我们可以直接在文件系统中将网页打开，但还是在web server中打开比较好，尤其，出于安全的考虑，大多数的浏览器不会允许Javascript请求运行在文件系统中。<br>运行phonecat项目的命令如下：</p><pre><code>npm start</code></pre><p>这样，在你本地的机器上，服务器开始监听8000端口。你可以在浏览器中输入如下网址便可以访问了：</p><pre><code>http://localhost:8000/app/index.html</code></pre><blockquote><p>想要让应用运行在其他ip地址或是端口，可以修改在package.json中的”start”脚本，你可以使用 <code>-a</code> 来设置ip地址，使用 <code>-p</code> 来设置端口。</p></blockquote><h3 id="运行单元测试"><a href="#运行单元测试" class="headerlink" title="运行单元测试"></a>运行单元测试</h3><p>在实际开发过程中，我们经常使用单元测试来验证我们的JS代码运行是否正确。单元测试专注于测试分离出来的小模块。在本项目中，所有的单元测试均在 <code>test/unit</code> 目录下。</p><p>本项目使用 Karma 来运行单元测试：</p><pre><code>npm test</code></pre><p>Karma 会读取 <code>test/karma.conf.js</code> 中的配置信息，配置信息中包括：</p><ul><li>打开一个Chrome 浏览器并连接到Karma</li><li>在这个浏览器中执行所有的单元测试</li><li>在终端命令行中返回测试结果</li><li>监测项目中的所有 Javascript 文件，如有文件变化，则重新启动测试</li></ul><p>最好在后台一直运行Karma，这样在你进行代码修改的时候，就能马上得到测试的反馈。</p>]]></content>
+    
+    <summary type="html">
+    
+      通过这个简单的教程，能够使你更加清晰地了解Angularjs网页应用的构成。跟随这个教程，你将会完成一个能展示手机列表的网页应用，这个应用包含关键字搜索，查看详情页等功能。
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+      <category term="angularjs" scheme="http://blog.chruyo.com/tags/angularjs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用D3js绘制力学图</title>
+    <link href="http://blog.chruyo.com/2015/07/12/d3js-start/"/>
+    <id>http://blog.chruyo.com/2015/07/12/d3js-start/</id>
+    <published>2015-07-11T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.283Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="D3-js简介"><a href="#D3-js简介" class="headerlink" title="D3.js简介"></a>D3.js简介</h2><p><a href="http://d3js.org/" target="_blank" rel="noopener">D3.js</a>是一个基于数据的文档操作javascript库，使用D3js能够大大简化对svg的繁琐操作，使用其提供的简单的API就可以制作许多酷炫的图表。</p><p>D3是一个开源项目，最新的源码请点击<a href="https://github.com/mbostock/d3" target="_blank" rel="noopener">这里</a>，作者是纽约时报的可视化编辑<a href="http://bost.ocks.org/mike/" target="_blank" rel="noopener">Mike Bostock</a>与他斯坦福大学的教授和学生，D3的全称是Data-Driven Documents。D3的应用十分广泛，经过<a href="https://github.com/" target="_blank" rel="noopener">Github</a>社区的不断完善和补充，目前已经成为了大数据的主流可视化工具之一，D3的速度非常快，能够处理大数据集以及相关的交互性动画行为，以下截图自D3的官网：</p><p>![D3 gallery](/img/D3js/d3 gallery.png)<br>更多的作品可以访问<a href="https://github.com/mbostock/d3/wiki/Gallery" target="_blank" rel="noopener">这里</a>。</p><h2 id="如何安装D3"><a href="#如何安装D3" class="headerlink" title="如何安装D3"></a>如何安装D3</h2><p>直接下载D3.js文件：<a href="https://github.com/mbostock/d3/releases/download/v3.4.8/d3.zip" target="_blank" rel="noopener">D3js</a>。解压后，直接在html文件中引用即可。或者直接在html中包含网络链接：</p><pre><code>&lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</code></pre><h2 id="D3-js的兼容性"><a href="#D3-js的兼容性" class="headerlink" title="D3.js的兼容性"></a>D3.js的兼容性</h2><p>目前D3兼容Firefox, Chrome, Safari, Opera, IE9+, Android and iOS。</p><h2 id="力学图（力导向图）的制作"><a href="#力学图（力导向图）的制作" class="headerlink" title="力学图（力导向图）的制作"></a>力学图（力导向图）的制作</h2><p><em>注：转自<a href="http://www.ourd3js.com/wordpress/" target="_blank" rel="noopener">馒头华华的专栏</a>，更多教程和例子请移步<a href="http://www.ourd3js.com/wordpress/" target="_blank" rel="noopener">馒头华华的专栏</a>。</em></p><p>首先，介绍下力学图，力学图（也称为导向图，也有叫网络拓补图的，就是<span style="color:red;">通过排斥得到关系远近的结构</span>）在社交网络研究、信息传播途径等群体关系研究中应用非常广泛，它可以直观地反映群体与群体之间联系的渠道、交集多少，群体内部成员的联系强度等。</p><h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>初始数据如下：</p><pre><code>var nodes = [ { name: &quot;吉林&quot;    },              { name: &quot;广州&quot; },             { name: &quot;厦门&quot;    },             { name: &quot;杭州&quot;   },             { name: &quot;上海&quot;   },             { name: &quot;青岛&quot;    },             { name: &quot;天津&quot;    },             { name: &quot;北京&quot;    },             { name: &quot;长春&quot;  },             { name: &quot;西安&quot;       },             { name: &quot;乌鲁木齐&quot;  },             { name: &quot;拉萨&quot;       },             { name: &quot;成都&quot;    } ];var edges = [  { source : 0  , target: 1 } ,              { source : 1  , target: 2 } ,              { source : 2  , target: 3 } ,              { source : 3  , target: 4 } ,              { source : 4  , target: 5 } ,              { source : 5  , target: 6 } ,              { source : 6  , target: 7 } ,              { source : 7  , target: 8 } ,              { source : 8  , target: 9 } ,              { source : 9  , target: 10 } ,              { source : 10 , target: 11 } ,              { source : 11 , target: 12 } ,              { source : 12 , target: 0 } ];</code></pre><p>这里有顶点（nodes）和边（edges），顶点是一些城市名，边是两顶点之间的连线。用这些数据来做力学图是不合适的，比如不知道顶点绘制的位置等。需要先用布局（Layout）来转换数据。</p><h3 id="布局（数据转换）"><a href="#布局（数据转换）" class="headerlink" title="布局（数据转换）"></a>布局（数据转换）</h3><p>布局（Layout），即数据转化函数。力学图的布局定义如下：</p><pre><code>var force = d3.layout.force()                        .nodes(nodes)                        .links(edges)                        .size([width,height])                        .linkDistance(200)                        .charge([-100])                        .start();</code></pre><p>其中，</p><ul><li>d3.layout.force() 是力学图 Layout 的函数</li><li>nodes() 里放入顶点的数组</li><li>links() 里放入边的数组</li><li>size() 是作用域的大小</li><li>linkDistance() 用于设定两个顶点之间的长度</li><li>charge() 设定相互吸引（+）还是排斥（-），以及大小</li><li>start() 开始计算</li></ul><p>调用这个函数后，我们来看看数据从什么转换成什么了：</p><p>顶点（转换前）：</p><p><img src="/img/D3js/921.png" alt=""></p><p>顶点（转换后）：</p><p><img src="/img/D3js/922.png" alt=""></p><p>转换后，多了一些数据。</p><p>其中,</p><ul><li>index 在顶点数组里的索引号（新）</li><li>name 原顶点就有的属性（旧）</li><li>px, py 顶点上一个时刻的坐标（新）</li><li>x, y 顶点当前坐标（新）</li><li>weight 顶点权重（新）</li></ul><p>再来看看边的数据：</p><p>边（转换前）：<br><img src="/img/D3js/923.png" alt=""></p><p>转换后：<br><img src="/img/D3js/924.png" alt=""></p><p>可以看到，边的两个成员变量变成了两个顶点的数据。</p><h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><p>有了转换后的数据，就可以作图了。</p><pre><code>var svg_edges = svg.selectAll(&quot;line&quot;)                      .data(edges)                      .enter()                      .append(&quot;line&quot;)                      .style(&quot;stroke&quot;,&quot;#ccc&quot;)                      .style(&quot;stroke-width&quot;,1);  var color = d3.scale.category20();  var svg_nodes = svg.selectAll(&quot;circle&quot;)                      .data(nodes)                      .enter()                      .append(&quot;circle&quot;)                      .attr(&quot;r&quot;,10)                      .style(&quot;fill&quot;,function(d,i){                          return color(i);                      })                      .call(force.drag);</code></pre><p>最后还需要一段代码，如下：</p><pre><code>force.on(&quot;tick&quot;, function(){     svg_edges.attr(&quot;x1&quot;, function(d){ return d.source.x; });     svg_edges.attr(&quot;y1&quot;, function(d){ return d.source.y; });     svg_edges.attr(&quot;x2&quot;, function(d){ return d.target.x; });     svg_edges.attr(&quot;y2&quot;, function(d){ return d.target.y; });     svg_nodes.attr(&quot;cx&quot;, function(d){ return d.x; });     svg_nodes.attr(&quot;cy&quot;, function(d){ return d.y; });});</code></pre><p>tick 指的是时间间隔，也就是每一个时间间隔之后就刷新一遍画面，刷新的内容写在后面的无名函数 function中，函数中写上更新的内容即可。</p><p>来看看最终效果图，用鼠标拖拽看看：</p><div id="d3Demo"></div><script>    $(document).ready(function($){    $('[data-toggle="popover"]').popover();<pre><code>var nodes = [ { name: &quot;吉林&quot;    },                   { name: &quot;广州&quot; },                  { name: &quot;厦门&quot;    },                  { name: &quot;杭州&quot;   },                  { name: &quot;上海&quot;   },                  { name: &quot;青岛&quot;    },                  { name: &quot;天津&quot;    },                  { name: &quot;北京&quot;    },                  { name: &quot;长春&quot;  },                  { name: &quot;西安&quot;       },                  { name: &quot;乌鲁木齐&quot;  },                  { name: &quot;拉萨&quot;       },                  { name: &quot;成都&quot;    } ];    var edges = [  { source : 0  , target: 1 } ,                   { source : 1  , target: 2 } ,                   { source : 2  , target: 3 } ,                   { source : 3  , target: 4 } ,                   { source : 4  , target: 5 } ,                   { source : 5  , target: 6 } ,                   { source : 6  , target: 7 } ,                   { source : 7  , target: 8 } ,                   { source : 8  , target: 9 } ,                   { source : 9  , target: 10 } ,                   { source : 10 , target: 11 } ,                   { source : 11 , target: 12 } ,                   { source : 12 , target: 0 } ];       var width = 800;    var height = 500;    var img_w = 50;    var img_h = 50;    var svg = d3.select(&quot;#d3Demo&quot;).append(&quot;svg&quot;)                            .attr(&quot;width&quot;,width)                            .attr(&quot;height&quot;,height);    var force = d3.layout.force()                        .nodes(nodes)                        .links(edges)                        .size([width,height])                        .linkDistance(200)                        .charge([-100])                        .start();    var svg_edges = svg.selectAll(&quot;line&quot;)                        .data(edges)                        .enter()                        .append(&quot;line&quot;)                        .style(&quot;stroke&quot;,&quot;#ccc&quot;)                        .style(&quot;stroke-width&quot;,1);    var color = d3.scale.category20();    var svg_nodes = svg.selectAll(&quot;circle&quot;)                        .data(nodes)                        .enter()                        .append(&quot;circle&quot;)                        .attr(&quot;r&quot;,15)                        .style(&quot;fill&quot;,function(d,i){                            return color(i);                        })                        .attr(&quot;data-toggle&quot;, &quot;popover&quot;)                        .attr(&quot;data-content&quot;, function(d) {                          return d.name;                        })                        .attr(&quot;data-container&quot;, &quot;body&quot;)                        .on(&quot;mouseenter&quot;, function() {                            $(this).popover(&apos;show&apos;);                        })                        .on(&quot;mouseleave&quot;, function() {                            $(this).popover(&apos;hide&apos;);                        })                        .call(force.drag);    force.on(&quot;tick&quot;, function(){        // nodes.forEach(function(d, i) {        //     d.x = d.x - img_w/2 &lt; 0 ? img_w/2 : d.x ;        //     d.x = d.x + img_w/2 &gt; width ? width - img_w/2 : d.x ;        //     d.y = d.y - img_h/2 &lt; 0 ? img_h/2 : d.y ;        //     d.y = d.y + img_h/2 &gt; height ? height - img_h/2 : d.y ;        // });         svg_edges.attr(&quot;x1&quot;,function(d){ return d.source.x; });         svg_edges.attr(&quot;y1&quot;,function(d){ return d.source.y; });         svg_edges.attr(&quot;x2&quot;,function(d){ return d.target.x; });         svg_edges.attr(&quot;y2&quot;,function(d){ return d.target.y; });         svg_nodes.attr(&quot;cx&quot;,function(d){ return d.x; });         svg_nodes.attr(&quot;cy&quot;,function(d){ return d.y; });    });</code></pre><p>});      </p><p></script></p><p>参考资料：</p><blockquote></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;D3-js简介&quot;&gt;&lt;a href=&quot;#D3-js简介&quot; class=&quot;headerlink&quot; title=&quot;D3.js简介&quot;&gt;&lt;/a&gt;D3.js简介&lt;/h2&gt;&lt;p&gt;&lt;a href=&quot;http://d3js.org/&quot; target=&quot;_blank&quot; rel=&quot;no
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="D3js" scheme="http://blog.chruyo.com/tags/D3js/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>大家好，我是短钝</title>
+    <link href="http://blog.chruyo.com/2015/06/23/first-blog/"/>
+    <id>http://blog.chruyo.com/2015/06/23/first-blog/</id>
+    <published>2015-06-22T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.284Z</updated>
+    
+    <content type="html"><![CDATA[<p>博客完全参照<a href="http://beiyuu.com" target="_blank" rel="noopener" title="BeiYuu">BeiYuu</a>的博客模板，在后面我可能会根据需要更改模板样式<br>至于博客内容肯定就是一些杂七杂八的东西，会有一些转载的好的技术类文章，也会有一些自己的生活照片，风景照片等，当然也少不了胡言乱语的部分。 </p><p>希望能在这里建造一片自己的小乐园~</p>]]></content>
+    
+    <summary type="html">
+    
+      第一次用github pages的功能来创建博客，折腾了一段时间，终于将这个博客挂载到了自己的域名下，希望大家没事能常来逛逛。
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://blog.chruyo.com/2015/06/21/hello-world/"/>
+    <id>http://blog.chruyo.com/2015/06/21/hello-world/</id>
+    <published>2015-06-20T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.286Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><a id="more"></a><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code>$ hexo new &quot;My New Post&quot;</code></pre><p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code>$ hexo server</code></pre><p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code>$ hexo generate</code></pre><p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code>$ hexo deploy</code></pre><p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to &lt;a href=&quot;http://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;http://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;http://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Github Pages建独立博客</title>
+    <link href="http://blog.chruyo.com/2015/06/21/github-pages/"/>
+    <id>http://blog.chruyo.com/2015/06/21/github-pages/</id>
+    <published>2015-06-20T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.285Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://github.com" target="_blank" rel="noopener" title="Github">Github</a>很好的将代码和社区联系在了一起，于是发生了很多有趣的事情，世界也因为他美好了一点点。Github作为现在最流行的代码仓库，已经得到很多大公司和项目的青睐，比如<a href="https://github.com/jquery/jquery" target="_blank" rel="noopener" title="jQuery@github">jQuery</a>、<a href="https://github.com/twitter/bootstrap" target="_blank" rel="noopener" title="Twitter@github">Twitter</a>等。为使项目更方便的被人理解，介绍页面少不了，甚至会需要完整的文档站，Github替你想到了这一点，他提供了<a href="http://pages.github.com/" target="_blank" rel="noopener" title="Github Pages">Github Pages</a>的服务，不仅可images以方便的为项目建立介绍站点，也可以用来建立个人博客。</p><a id="more"></a><ul><li><p>Github Pages有以下几个优点：</p><blockquote><p>轻量级的博客系统，没有麻烦的配置<br>使用标记语言，比如<a href="http://markdown.tw" target="_blank" rel="noopener">Markdown</a></a><br>无需自己搭建服务器<br>根据Github的限制，对应的每个站有300MB空间<br>可以绑定自己的域名<br>当然他也有缺点：</p></blockquote></li><li><p>使用<a href="https://github.com/mojombo/jekyll" target="_blank" rel="noopener" title="Jekyll">Jekyll</a>模板系统，相当于静态页发布，适合博客，文档介绍等。</p></li><li><p>动态程序的部分相当局限，比如没有评论，不过还好我们有解决方案。</p></li><li><p>基于Git，很多东西需要动手，不像Wordpress有强大的后台</p></li></ul><p>大致介绍到此，作为个人博客来说，简洁清爽的表达自己的工作、心得，就已达目标，所以Github Pages是我认为此需求最完美的解决方案了。</p><h2 id="购买、绑定独立域名"><a href="#购买、绑定独立域名" class="headerlink" title="购买、绑定独立域名"></a>购买、绑定独立域名</h2><p>虽说<a href="http://www.godaddy.com/" target="_blank" rel="noopener" title="Godaddy">Godaddy</a>曾支持过SOPA，并且首页放着极其不专业的大胸美女，但是作为域名服务商他做的还不赖，选择它最重要的原因是他支持支付宝，没有信用卡有时真的很难过。</p><p>域名的购买不用多讲，注册、选域名、支付，有网购经验的都毫无压力，优惠码也遍地皆是。域名的配置需要提醒一下，因为伟大英明的GFW的存在，我们必须多做些事情。</p><p>流传Godaddy的域名解析服务器被墙掉，导致域名无法访问，后来这个事情在<a href="http://beiyuu.com" target="_blank" rel="noopener" title="BeiYuu">BeiYuu</a>也发生了，不得已需要把域名解析服务迁移到国内比较稳定的服务商处，这个迁移对于域名来说没有什么风险，最终的控制权还是在Godaddy那里，你随时都可以改回去。</p><p>我们选择<a href="https://www.dnspod.cn/" target="_blank" rel="noopener" title="DNSPod">DNSPod</a>的服务，他们的产品做得不错，易用、免费，收费版有更高端的功能，暂不需要。注册登录之后，按照DNSPod的说法，只需三步（我们插入一步）：</p><ul>    <li>首先添加域名记录，可参考DNSPod的帮助文档：<a href="https://www.dnspod.cn/Support" target="_blank" rel="noopener">https://www.dnspod.cn/Support</a></li>    <li>在DNSPod自己的域名下添加一条<a href="http://baike.baidu.com/view/65575.htm" target="_blank" rel="noopener">A记录</a>，地址就是Github Pages的服务IP地址：207.97.227.245</li>    <li>在域名注册商处修改DNS服务:去Godaddy修改Nameservers为这两个地址：f1g1ns1.dnspod.net、f1g1ns2.dnspod.net。如果你不明白在哪里修改，可以参考这里：<a href="https://www.dnspod.cn/support/index/fid/119" target="_blank" rel="noopener">Godaddy注册的域名如何使用DNSPod</a></li>    <li>等待域名解析生效</li></ul><p>域名的配置部分完成，跪谢方校长。</p><h2 id="配置和使用Github"><a href="#配置和使用Github" class="headerlink" title="配置和使用Github"></a>配置和使用Github</h2><p>Git是版本管理的未来，他的优点我不再赘述，相关资料很多。推荐这本<a href="http://progit.org/book/zh/" target="_blank" rel="noopener" title="Pro Git中文版">Git中文教程</a>。</p><p>要使用Git，需要安装它的客户端，推荐在Linux下使用Git，会比较方便。Windows版的下载地址在这里：<a href="http://code.google.com/p/msysgit/downloads/list" target="_blank" rel="noopener" title="Windows版Git客户端">http://code.google.com/p/msysgit/downloads/list</a>。其他系统的安装也可以参考官方的<a href="http://help.github.com/mac-set-up-git/" target="_blank" rel="noopener" title="Mac下Git安装">安装教程</a>。</p><p>下载安装客户端之后，各个系统的配置就类似了，我们使用windows作为例子，Linux和Mac与此类似。</p><p>在Windows下，打开Git Bash，其他系统下面则打开终端（Terminal）：<br><img src="/img/githubpages/bootcamp_1_win_gitbash.jpg" alt="Git Bash"></p><p>###1、检查SSH keys的设置<br>首先我们需要检查你电脑上现有的ssh key：</p><pre><code>$ cd ~/.ssh</code></pre><p>如果显示“No such file or directory”，跳到第三步，否则继续。</p><p>###2、备份和移除原来的ssh key设置：<br>因为已经存在key文件，所以需要备份旧的数据并删除：</p><pre><code>$ lsconfig  id_rsa  id_rsa.pub  known_hosts$ mkdir key_backup$ cp id_rsa* key_backup$ rm id_rsa*</code></pre><p>###3、生成新的SSH Key：<br>输入下面的代码，就可以生成新的key文件，我们只需要默认设置就好，所以当需要输入文件名的时候，回车就好。</p><pre><code>$ ssh-keygen -t rsa -C &quot;邮件地址@youremail.com&quot;Generating public/private rsa key pair.Enter file in which to save the key (/Users/your_user_directory/.ssh/id_rsa):&lt;回车就好&gt;</code></pre><p>然后系统会要你输入加密串（<a href="http://help.github.com/ssh-key-passphrases/" target="_blank" rel="noopener">Passphrase</a>）：</p><pre><code>Enter passphrase (empty for no passphrase):&lt;输入加密串&gt;Enter same passphrase again:&lt;再次输入加密串&gt;</code></pre><p>最后看到这样的界面，就成功设置ssh key了：<br><img src="/img/githubpages/ssh-key-set.png" alt="ssh key success"></p><p>###4、添加SSH Key到GitHub：<br>在本机设置SSH Key之后，需要添加到GitHub上，以完成SSH链接的设置。</p><p>用文本编辑工具打开id_rsa.pub文件，如果看不到这个文件，你需要设置显示隐藏文件。准确的复制这个文件的内容，才能保证设置的成功。</p><p>在GitHub的主页上点击设置按钮：<br><img src="/img/githubpages/github-account-setting.png" alt="github account setting"></p><p>选择SSH Keys项，把复制的内容粘贴进去，然后点击Add Key按钮即可：<br><img src="/img/githubpages/bootcamp_1_ssh.jpg" alt="set ssh keys"></p><p>PS：如果需要配置多个GitHub账号，可以参看这个<a href="http://omiga.org/blog/archives/2269" target="_blank" rel="noopener">多个github帐号的SSH key切换</a>，不过需要提醒一下的是，如果你只是通过这篇文章中所述配置了Host，那么你多个账号下面的提交用户会是一个人，所以需要通过命令<code>git config --global --unset user.email</code>删除用户账户设置，在每一个repo下面使用<code>git config --local user.email &#39;你的github邮箱@mail.com&#39;</code> 命令单独设置用户账户信息</p><p>###5、测试一下<br>可以输入下面的命令，看看设置是否成功，<code>git@github.com</code>的部分不要修改：</p><pre><code>$ ssh -T git@github.com</code></pre><p>如果是下面的反应：</p><pre><code>The authenticity of host &apos;github.com (207.97.227.239)&apos; can&apos;t be established.RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.Are you sure you want to continue connecting (yes/no)?</code></pre><p>不要紧张，输入<code>yes</code>就好，然后会看到：</p><pre><code>Hi &lt;em&gt;username&lt;/em&gt;! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</code></pre><p>###6、设置你的账号信息<br>现在你已经可以通过SSH链接到GitHub了，还有一些个人信息需要完善的。</p><p>Git会根据用户的名字和邮箱来记录提交。GitHub也是用这些信息来做权限的处理，输入下面的代码进行个人信息的设置，把名称和邮箱替换成你自己的，名字必须是你的真名，而不是GitHub的昵称。</p><pre><code>$ git config --global user.name &quot;你的名字&quot;$ git config --global user.email &quot;your_email@youremail.com&quot;</code></pre><p>####设置GitHub的token</p><p>2012-4-28补充：新版的接口已经不需要配置token了，所以下面这段可以跳过了</p><p>有些工具没有通过SSH来链接GitHub。如果要使用这类工具，你需要找到然后设置你的API Token。</p><p>在GitHub上，你可以点击<em>Account Setting &gt; Account Admin</em>：<br><img src="/img/githubpages/bootcamp_1_token.jpg" alt="set ssh keys"></p><p>然后在你的命令行中，输入下面的命令，把token添加进去：</p><pre><code>$ git config --global user.name &quot;你的名字&quot;$ git config --global user.token 0123456789your123456789token</code></pre><p>如果你改了GitHub的密码，需要重新设置token。</p><p>###成功了<br>好了，你已经可以成功连接GitHub了。</p><h2 id="使用GitHub-Pages建立博客"><a href="#使用GitHub-Pages建立博客" class="headerlink" title="使用GitHub Pages建立博客"></a>使用GitHub Pages建立博客</h2><p>与GitHub建立好链接之后，就可以方便的使用它提供的Pages服务，GitHub Pages分两种，一种是你的GitHub用户名建立的<code>username.github.io</code>这样的用户&amp;组织页（站），另一种是依附项目的pages。</p><p>###User &amp; Organization Pages<br>想建立个人博客是用的第一种，形如<code>beiyuu.github.io</code>这样的可访问的站，每个用户名下面只能建立一个，创建之后点击<code>Admin</code>进入项目管理，可以看到是这样的：<br><img src="/img/githubpages/user-pages.png" alt="user pages"><br>而普通的项目是这样的，即使你也是用的<code>othername.github.io</code>：<br><img src="/img/githubpages/other-pages.png" alt="other pages"></p><p>创建好<code>username.github.io</code>项目之后，提交一个<code>index.html</code>文件，然后<code>push</code>到GitHub的<code>master</code>分支（也就是普通意义上的主干）。第一次页面生效需要一些时间，大概10分钟左右。</p><p>生效之后，访问<code>username.github.io</code>就可以看到你上传的页面了，<a href="http://beiyuu.github.com" target="_blank" rel="noopener">beiyuu.github.com</a>就是一个例子。</p><p>关于第二种项目<code>pages</code>，简单提一下，他和用户pages使用的后台程序是同一套，只不过它的目的是项目的帮助文档等跟项目绑定的内容，所以需要在项目的<code>gh-pages</code>分支上去提交相应的文件，GitHub会自动帮你生成项目pages。具体的使用帮助可以参考<a href="http://pages.github.com/" target="_blank" rel="noopener" title="Github Pages">Github Pages</a>的官方文档：</p><p>###绑定域名<br>我们在第一部分就提到了在DNS部分的设置，再来看在GitHub的配置，要想让<code>username.github.io</code>能通过你自己的域名来访问，需要在项目的根目录下新建一个名为<code>CNAME</code>的文件，文件内容形如：</p><pre><code>beiyuu.com</code></pre><p>你也可以绑定在二级域名上：</p><pre><code>blog.beiyuu.com</code></pre><p>需要提醒的一点是，如果你使用形如<code>beiyuu.com</code>这样的一级域名的话，需要在DNS处设置A记录到<code>207.97.227.245</code>（<strong>这个地址会有变动，<a href="https://help.github.com/articles/my-custom-domain-isn-t-working" target="_blank" rel="noopener">这里</a>查看</strong>），而不是在DNS处设置为CNAME的形式，否则可能会对其他服务（比如email）造成影响。</p><p>设置成功后，根据DNS的情况，最长可能需要一天才能生效，耐心等待吧。</p><p>##Jekyll模板系统<br>GitHub Pages为了提供对HTML内容的支持，选择了<a href="https://github.com/mojombo/jekyll" target="_blank" rel="noopener" title="Jekyll">Jekyll</a>作为模板系统，Jekyll是一个强大的静态模板系统，作为个人博客使用，基本上可以满足要求，也能保持管理的方便，你可以查看<a href="https://github.com/mojombo/jekyll/blob/master/README.textile" target="_blank" rel="noopener">Jekyll官方文档</a>。</p><p>你可以直接fork<a href="https://github.com/beiyuu/beiyuu.github.com" target="_blank" rel="noopener">我的项目</a>，然后改名，就有了你自己的满足Jekyll要求的文档了，当然你也可以按照下面的介绍自己创建。</p><p>###Jekyll基本结构<br>Jekyll的核心其实就是一个文本的转换引擎，用你最喜欢的标记语言写文档，可以是Markdown、Textile或者HTML等等，再通过<code>layout</code>将文档拼装起来，根据你设置的URL规则来展现，这些都是通过严格的配置文件来定义，最终的产出就是web页面。</p><p>基本的Jekyll结构如下：</p><pre><code>|-- _config.yml|-- _includes|-- _layouts|   |-- default.html|   `-- post.html|-- _posts|   |-- 2007-10-29-why-every-programmer-should-play-nethack.textile|   `-- 2009-04-26-barcamp-boston-4-roundup.textile|-- _site`-- index.html</code></pre><p>简单介绍一下他们的作用：<br>####_config.yml<br>配置文件，用来定义你想要的效果，设置之后就不用关心了。</p><p>####_includes<br>可以用来存放一些小的可复用的模块，方便通过<code>{ % include file.ext %}</code>（去掉前两个{中或者{与%中的空格，下同）灵活的调用。这条命令会调用_includes/file.ext文件。</p><p>####_layouts<br>这是模板文件存放的位置。模板需要通过<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter" target="_blank" rel="noopener">YAML front matter</a>来定义，后面会讲到，<code>{ { content }}</code>标记用来将数据插入到这些模板中来。</p><p>####_posts<br>你的动态内容，一般来说就是你的博客正文存放的文件夹。他的命名有严格的规定，必须是<code>2012-02-22-artical-title.MARKUP</code>这样的形式，MARKUP是你所使用标记语言的文件后缀名，根据_config.yml中设定的链接规则，可以根据你的文件名灵活调整，文章的日期和标记语言后缀与文章的标题的独立的。</p><p>####_site<br>这个是Jekyll生成的最终的文档，不用去关心。最好把他放在你的<code>.gitignore</code>文件中忽略它。</p><p>####其他文件夹<br>你可以创建任何的文件夹，在根目录下面也可以创建任何文件，假设你创建了<code>project</code>文件夹，下面有一个<code>github-pages.md</code>的文件，那么你就可以通过<code>yoursite.com/project/github-pages</code>访问的到，如果你是使用一级域名的话。文件后缀可以是<code>.html</code>或者<code>markdown</code>或者<code>textile</code>。这里还有很多的例子：<a href="https://github.com/mojombo/jekyll/wiki/Sites" target="_blank" rel="noopener">https://github.com/mojombo/jekyll/wiki/Sites</a></p><p>###Jekyll的配置<br>Jekyll的配置写在_config.yml文件中，可配置项有很多，我们不去一一追究了，很多配置虽有用但是一般不需要去关心，<a href="https://github.com/mojombo/jekyll/wiki/configuration" target="_blank" rel="noopener">官方配置文档</a>有很详细的说明，确实需要了可以去这里查，我们主要说两个比较重要的东西，一个是<code>Permalink</code>，还有就是自定义项。</p><p><code>Permalink</code>项用来定义你最终的文章链接是什么形式，他有下面几个变量：</p><ul><li><code>year</code> 文件名中的年份</li><li><code>month</code> 文件名中的月份</li><li><code>day</code> 文件名中的日期</li><li><code>title</code> 文件名中的文章标题</li><li><code>categories</code> 文章的分类，如果文章没有分类，会忽略</li><li><code>i-month</code> 文件名中的除去前缀0的月份</li><li><code>i-day</code> 文件名中的除去前缀0的日期</li></ul><p>看看最终的配置效果：</p><ul><li><code>permalink: pretty</code> /2009/04/29/slap-chop/index.html</li><li><code>permalink: /:month-:day-:year/:title.html</code> /04-29-2009/slap-chop.html</li><li><code>permalink: /blog/:year/:month/:day/:title</code> /blog/2009/04/29/slap-chop/index.html</li></ul><p>我使用的是：</p><ul><li><code>permalink: /:title</code> /github-pages</li></ul><p>自定义项的内容，例如我们定义了<code>title:BeiYuu的博客</code>这样一项，那么你就可以在文章中使用<code>{ { site.title }}</code>来引用这个变量了，非常方便定义些全局变量。</p><p>###YAML Front Matter和模板变量<br>对于使用YAML定义格式的文章，Jekyll会特别对待，他的格式要求比较严格，必须是这样的形式：</p><pre><code>---layout: posttitle: Blogging Like a Hacker---</code></pre><p>前后的<code>---</code>不能省略，在这之间，你可以定一些你需要的变量，layout就是调用<code>_layouts</code>下面的某一个模板，他还有一些其他的变量可以使用：</p><ul><li><code>permalink</code> 你可以对某一篇文章使用通用设置之外的永久链接</li><li><code>published</code> 可以单独设置某一篇文章是否需要发布</li><li><code>category</code> 设置文章的分类</li><li><code>tags</code> 设置文章的tag</li></ul><p>上面的<code>title</code>就是自定义的内容，你也可以设置其他的内容，在文章中可以通过<code>{ { page.title }}</code>这样的形式调用。</p><p>模板变量，我们之前也涉及了不少了，还有其他需要的变量，可以参考官方的文档：<a href="https://github.com/mojombo/jekyll/wiki/template-data" target="_blank" rel="noopener" title="Jekyll Template Data">https://github.com/mojombo/jekyll/wiki/template-data</a></p><h2 id="使用Disqus管理评论"><a href="#使用Disqus管理评论" class="headerlink" title="使用Disqus管理评论"></a>使用Disqus管理评论</h2><p>模板部分到此就算是配置完毕了，但是Jekyll只是个静态页面的发布系统，想做到关爽场倒是很容易，如果想要评论呢？也很简单。</p><p>现在专做评论模块的产品有很多，比如<a href="http://disqus.com/" target="_blank" rel="noopener">Disqus</a>，还有国产的<a href="http://duoshuo.com/" target="_blank" rel="noopener">多说</a>，Disqus对现在各种系统的支持都比较全面，到写博客为止，多说现在仅是WordPress的一个插件，所以我这里暂时也使用不了，多说与国内的社交网络紧密结合，还是有很多亮点的，值得期待一下。我先选择了Disqus。</p><p>注册账号什么的就不提了，Disqus支持很多的博客平台，参见下图：<br><img src="/img/githubpages/disqus-site.jpg" alt="Disqus sites"></p><p>我们选择最下面的<code>Universal Code</code>就好，然后会看到一个介绍页面，把下面这段代码复制到你的模板里面，可以只复制到显示文章的模板中：</p><pre><code>&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;&lt;script type=&quot;text/javascript&quot;&gt;    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */    var disqus_shortname = &apos;example&apos;; // required: replace example with your forum shortname 这个地方需要改成你配置的网站名    /* * * DON&apos;T EDIT BELOW THIS LINE * * */    (function() {        var dsq = document.createElement(&apos;script&apos;); dsq.type = &apos;text/javascript&apos;; dsq.async = true;        dsq.src = &apos;http://&apos; + disqus_shortname + &apos;.disqus.com/embed.js&apos;;        (document.getElementsByTagName(&apos;head&apos;)[0] || document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(dsq);    })();&lt;/script&gt;&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;blog comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</code></pre><p>配置完之后，你也可以做一些异步加载的处理，提高性能，比如我就在最开始页面打开的时候不显示评论，当你想看评论的时候，点击“显示评论”再加载Disqus的模块。代码很简单，你可以参考我的写法。</p><pre><code>$(&apos;#disqus_container .comment&apos;).on(&apos;click&apos;,function(){        $(this).html(&apos;加载中...&apos;);        var disqus_shortname = &apos;beiyuu&apos;;        var that = this;        BYB.includeScript(&apos;http://&apos; + disqus_shortname + &apos;.disqus.com/embed.js&apos;,function(){$(that).remove()}); //这是一个加载js的函数});</code></pre><p>如果你不喜欢Disqus的样式，你也可以根据他生成的HTML结构，自己改写样式覆盖它的，Disqus现在也提供每个页面的评论数接口，<a href="http://docs.disqus.com/developers/universal/" target="_blank" rel="noopener">帮助文档</a>在这里可以看到。</p><p>##代码高亮插件<br>如果写技术博客，代码高亮少不了，有两个可选插件<a href="http://mihai.bazon.net/projects/javascript-syntax-highlighting-engine" target="_blank" rel="noopener">DlHightLight代码高亮组件</a>和<a href="http://code.google.com/p/google-code-prettify/" target="_blank" rel="noopener">Google Code Prettify</a>。DLHightLight支持的语言相对较少一些，有js、css、xml和html，Google的高亮插件基本上任何语言都支持，也可以自定义语言，也支持自动识别，也有行号的特别支持。</p><p>Google的高亮插件使用也比较方便，只需要在<code>&lt;pre&gt;</code>的标签上加入<code>prettyprint</code>即可。所以我选择了Google Code Prettify。</p><p>##搭建本地jekyll环境<br>这里主要介绍一下在Mac OS X下面的安装过程，其他操作系统可以参考官方的<a href="https://github.com/mojombo/jekyll/wiki/Install" target="_blank" rel="noopener">jekyll安装</a>。</p><p>作为生活在水深火热的墙内人民，有必要进行下面一步修改gem的源，方便我们更快的下载所需组建：</p><pre><code>sudo gem sources --remove http://rubygems.org/ sudo gem sources -a http://ruby.taobao.org/ </code></pre><p>然后用Gem安装jekyll</p><pre><code>$ gem install jekyll</code></pre><p>不过一般如果有出错提示，你可能需要这样安装：</p><pre><code>$ sudo gem install jekyll</code></pre><p>我到了这一步的时候总是提示错误<code>Failed to build gem native extension</code>，很可能的一个原因是没有安装rvm，<a href="https://rvm.io/rvm/install/" target="_blank" rel="noopener">rvm的安装</a>可以参考这里，或者敲入下面的命令：</p><pre><code>$ curl -L https://get.rvm.io | bash -s stable --ruby</code></pre><p>然后还需要安装Markdown的解释器，这个需要在你的_config.yml里面设置<code>markdown:rdiscount</code>：</p><pre><code>$ gem install jekyll rdiscount</code></pre><p>好了，如果一切顺利的话，本地环境就基本搭建完成了，进入之前我们建立的博客目录，运行下面的命令：</p><pre><code>$ jekyll --server</code></pre><p>这个时候，你就可以通过<code>localhost:4000</code>来访问了。还有关于<a href="http://jekyllbootstrap.com/" target="_blank" rel="noopener">jekyll bootstrap</a>的资料，需要自己修改调试的，可以研究一下。</p><p>我在这个过程中还遇到两个诡异的没有解决的问题，一个是我放在根目录下面的blog.md等文件，在GitHub的pages服务上一切正常，可以通过<code>beiyuu.com/blog</code>访问的到，但是在本地环境下，总是<code>not found</code>，很是让人郁闷，看生成的<code>_site</code>目录下面的文件，也是正常的<code>blog.html</code>，但就是找不到，只有当我把URL改为<code>localhost:4000/blog.html</code>的时候，才能访问的到，环境不同真糟糕。</p><p>还有一个是关于<code>category</code>的问题，根据<code>YAML</code>的语法，我们在文章头部可以定义文章所属的类别，也可以定义为<code>category:[blog,rss]</code>这样子的多类别，我在本地试一切正常，但是push到GitHub之后，就无法读取了，真让人着急，没有办法，只能采用别的办法满足我的需求了。这里还有一篇<a href="http://chxt6896.github.com/blog/2012/02/13/blog-jekyll-native.html" target="_blank" rel="noopener">Jekyll 本地调试之若干问题</a>，安装中如果有其他问题，也可以对照参考一下。</p><p>##结语<br>如果你跟着这篇不那么详尽的教程，成功搭建了自己的博客，恭喜你！剩下的就是保持热情的去写自己的文章吧。</p>]]></content>
+    
+    <summary type="html">
+    
+      Github本身就是不错的代码社区，他也提供了一些其他的服务，比如Github Pages，使用它可以很方便的建立自己的独立博客，并且免费。
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="github" scheme="http://blog.chruyo.com/tags/github/"/>
+    
+      <category term="pages" scheme="http://blog.chruyo.com/tags/pages/"/>
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,1169 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+  
+    <title>使用Html5完成客户端扫描识别二维码 | Duandun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Duandun JQ">
+    
+
+    
+    <meta name="description" content="最近由于项目的需要，领导想要做一个类似授权模块的东西，通过这个模块，允许用户授权给第三方应用或是网站来访问其存储在其他网站（应用）上的特定信息，这种授权方式被成为 oAuth2.0，被大量应用在微博，微信等应用和网站，论坛中。在开发过程中，领导想要通过扫二维码的方式来进行令牌（token）的获取和身份的认证，为简化操作和开发过程，决定使用 Html5 来实现这一扫码功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Html5完成客户端扫描识别二维码">
+<meta property="og:url" content="http://blog.chruyo.com/2015/08/06/html5Camera/index.html">
+<meta property="og:site_name" content="Duandun">
+<meta property="og:description" content="最近由于项目的需要，领导想要做一个类似授权模块的东西，通过这个模块，允许用户授权给第三方应用或是网站来访问其存储在其他网站（应用）上的特定信息，这种授权方式被成为 oAuth2.0，被大量应用在微博，微信等应用和网站，论坛中。在开发过程中，领导想要通过扫二维码的方式来进行令牌（token）的获取和身份的认证，为简化操作和开发过程，决定使用 Html5 来实现这一扫码功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.chruyo.com/img/html5/tree_content.png">
+<meta property="og:image" content="http://blog.chruyo.com/img/html5/npm_start.png">
+<meta property="og:image" content="http://blog.chruyo.com/img/html5/running.png">
+<meta property="og:image" content="http://blog.chruyo.com/img/html5/demo.png">
+<meta property="article:published_time" content="2015-08-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-03-12T09:52:16.286Z">
+<meta property="article:author" content="Duandun JQ">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="分享">
+<meta property="article:tag" content="html5">
+<meta property="article:tag" content="qrcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.chruyo.com/img/html5/tree_content.png">
+<link rel="publisher" href="115635956630112675477">
+
+    
+    <link rel="alternative" href="atom.xml" title="Duandun" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/snoopy.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/snoopy.jpg">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/%02.css">
+<link rel="stylesheet" href="/.css">
+
+    <link rel="stylesheet" href="/js/prettify/prettify.css" type="text/css">
+    <script src="/js/jquery-2.0.3.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    
+      <script src="/js/d3.js" type="text/javascript" charset="utf-8" ></script>
+    
+    <style>
+        pre.prettyprint
+        {
+            border: 2px dashed #888;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+        }
+    </style>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/snoopy3.png" alt="Duandun" title="Duandun"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Duandun">Duandun</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+						<form class="search">
+							<label>Search</label>
+						<input type="text" id="ts-search-input" name="q" size="30" placeholder="搜索"><br>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/06/html5Camera/" title="使用Html5完成客户端扫描识别二维码" itemprop="url">使用Html5完成客户端扫描识别二维码</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="http://weibo.com/duandun" title="Duandun JQ" target="_blank" itemprop="author">Duandun JQ</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-05T16:00:00.000Z" itemprop="datePublished">  2015-08-06 </time>
+    更新日期:<time datetime="2020-03-12T09:52:16.286Z" itemprop="dateModified"> 2020-03-12 17:52</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工作"><span class="toc-number">1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用express-generator初始化一个项目"><span class="toc-number">2.</span> <span class="toc-text">使用express-generator初始化一个项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#言归正传"><span class="toc-number">3.</span> <span class="toc-text">言归正传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#说了这么多，也该开始正题了"><span class="toc-number">3.1.</span> <span class="toc-text">说了这么多，也该开始正题了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现原理"><span class="toc-number">3.2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现效果"><span class="toc-number">3.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>最近由于项目的需要，领导想要做一个类似授权模块的东西，通过这个模块，允许用户授权给第三方应用或是网站来访问其存储在其他网站（应用）上的特定信息，这种授权方式被成为 <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">oAuth2.0</a>，被大量应用在微博，微信等应用和网站，论坛中。在开发过程中，领导想要通过扫二维码的方式来进行令牌（token）的获取和身份的认证，为简化操作和开发过程，决定使用 Html5 来实现这一扫码功能。</p>
+<a id="more"></a>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
+<li>两部测试机：iphone5s + galaxy s4</li>
+<li>测试浏览器：Chrome in Android, UC in Android, Safari in iphone5s</li>
+<li>web环境：Nodejs + bootstrap3 </li>
+<li>工具库：jsqrcode, jquery-qrcode</li>
+</ul>
+<p>由于手头就两部手机，所以这两部就分别作为IOS和Android测试机器。对于 html5 中新增标签和 api 的浏览器支持情况，可以访问如下网站查询： <a href="http://caniuse.com/" target="_blank" rel="noopener">http://caniuse.com/</a> 。</p>
+<p>由于研究时间有限，所以就先找来支持情况比较好的 Chrome 和 UC 浏览器作为测试浏览器，在iphone5s中则使用原生浏览器 Safari 。</p>
+<p>扫码工作主要在前端进行，后端主要进行数据的处理和路由发送信息，所以没有必要再去搭建一个整套的 MVC 框架来运行应用（确实我对后端的技术也不是很了解），这里采用比较偷懒的自动搭建了一个 nodejs web环境，用来模拟服务器端。</p>
+<p>样式采用了<a href="http://v3.bootcss.com/" target="_blank" rel="noopener">bootstrap3</a>框架（只是简单应用了一些栅格系统和按钮，让这个demo不会显得太挫）。</p>
+<p><a href="https://github.com/LazarSoft/jsqrcode" target="_blank" rel="noopener">jsqrcode</a> 是 <a href="https://github.com/zxing/zxing" target="_blank" rel="noopener">zxing qrcode scanner</a> 的一个javascript移植，应用这个库就可以在客户端进行二维码的识别工作了！<a href="http://jeromeetienne.github.io/jquery-qrcode/" target="_blank" rel="noopener">jquery-qrcode</a> 是 <a href="http://jquery.com/" target="_blank" rel="noopener">jquery</a> 的一个插件，用来生成二维码的工具库。</p>
+<h2 id="使用express-generator初始化一个项目"><a href="#使用express-generator初始化一个项目" class="headerlink" title="使用express-generator初始化一个项目"></a>使用express-generator初始化一个项目</h2><p>首先要安装 <code>express-generator</code><br>使用 <code>npm</code> 来进行安装：</p>
+<pre><code>sudo npm install -g express-generator</code></pre><p>windows 用户不需要键入 <code>sudo</code> </p>
+<p>安装完 <code>express-generator</code> 后，执行以下命令：</p>
+<pre><code>express ejs myapp</code></pre><p>这样就在当前目录下生成了一个名叫myapp 的 express项目了。这个项目以 <code>ejs</code> 作为模板，关于 <code>ejs</code> 的使用，请移步： <a href="http://www.embeddedjs.com/" target="_blank" rel="noopener">http://www.embeddedjs.com/</a><br>该项目的目录结构如下：<br><img src="/img/html5/tree_content.png" alt=""></p>
+<p>对于其具体的运行过程和各个文件的作用，请移步 <a href="https://cnodejs.org/" target="_blank" rel="noopener">nodejs社区</a> 进行学习，在这里，我们输入以下命令来安装相关的依赖包</p>
+<pre><code>npm install</code></pre><p>在下载完相关包后，键入命令：</p>
+<pre><code>npm start</code></pre><p>就可以看到项目已经开始运行了。<br><img src="/img/html5/npm_start.png" alt=""></p>
+<p>这时候，在浏览器中输入网址 <a href="http://localhost:3000/" target="_blank" rel="noopener">http://localhost:3000/</a> 便能看到网站正在运行了！<br><img src="/img/html5/running.png" alt=""></p>
+<h2 id="言归正传"><a href="#言归正传" class="headerlink" title="言归正传"></a>言归正传</h2><p>如今二维码已经深入到我们的生活当中，支付宝中的二维码支付，微信中的“扫一扫”，手机应用app的下载也有很多采用了二维码扫描的方式。相比较于过去经常使用的条形码，二维码拥有很多优势：</p>
+<ul>
+<li>数据容量大（一维条形码仅能最多存储30个字符左右，二维码则最多可容纳1850个大写字母或2710个数字或1108个字节，或500多个汉字）</li>
+<li>超越了字母数字的限制（一维条形码仅能包含字母和数字，而二维码可以包含汉字，图片，声音，签字，指纹等信息）</li>
+<li>条码相对尺寸比较小</li>
+<li>具有抗损伤能力（二维码在因为穿孔、污损等引起局部损坏时，照样可以被正确识别）</li>
+<li>译码可靠性高（二维码比普通一维条形码译码错误率百万分之二要低得多，误码率不超过千万分之一）</li>
+<li>可以引入加密措施</li>
+<li>符号性状，尺寸大小可变</li>
+</ul>
+<h3 id="说了这么多，也该开始正题了"><a href="#说了这么多，也该开始正题了" class="headerlink" title="说了这么多，也该开始正题了"></a>说了这么多，也该开始正题了</h3><p>首先使用 <code>bower</code> 来下载对应要使用的工具库，配置 <code>.bowerrc</code> ，在项目根目录下创建一个叫 <code>.bowerrc</code> 的文件，输入以下代码：</p>
+<pre><code>{
+    &quot;directory&quot;: &quot;public/libs&quot;
+}</code></pre><p>这句话表示你的静态文件所在的目录。</p>
+<p>在终端中输入如下命令：</p>
+<pre><code>bower install jsqrcode, jquery-qrcode, bootstrap --save</code></pre><p>这样所需要的依赖库就都下载完毕了。</p>
+<p>在项目目录下的 <code>views</code> 目录下创建文件 <code>qrcode.ejs</code> ，并在 <code>routes</code> 目录下的 <code>index.js</code> 文件中添加如下语句：</p>
+<pre><code>router.get(&apos;/qr&apos;, function(req, res, next) {
+    res.render(&apos;qrcode&apos;);
+});</code></pre><p>这样，在浏览器中输入 <a href="http://localhost:3000/qr" target="_blank" rel="noopener">http://localhost:3000/qr</a> ，便能跳转到 <code>qrcode.ejs</code> 页面并渲染。</p>
+<p>我们的主要程序都是写在 <code>qrcode.ejs</code> 文件中。<br>由于是在手机端的 webapp， 所以需要添加如下语句来使得页面适应手机端的浏览器</p>
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui&quot;&gt;</code></pre><p>加入用于解析二维码的js库文件（一大堆）</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/js/grid.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/version.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/detector.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/formatinf.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/errorlevel.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bitmat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datablock.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bmparser.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datamask.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/rsdecoder.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256poly.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/decoder.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/qrcode.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/findpat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/alignpat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/databr.js&quot;&gt;&lt;/script&gt;</code></pre><p>由于需要在网页中调用手机摄像头，这样就需要使用 html5 中提供的一些新的 api，在这里需要使用 <code>getUserMedia</code> 和 <code>MediaStreamTrack</code> 两个函数。其中， <code>getUserMedia</code> 可以获取当前设备的摄像头和音频设备，<code>MediaStreamTrack</code> 用来获取当前设备音频和视频源（如获取手机多个摄像头的<code>Id</code>）。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>使用 <code>video</code> 标签来显示当前设备的视频图像，将图像绘制在 <code>canvas</code> 标签中，再使用二维码解析库解析 <code>canvas</code>。</p>
+<p><span style="color:red;font-size:80%;">注：该实例仅适用于 Android 手机的 chrome 浏览器（或UC浏览器），由于浏览器的原因，在UC浏览器中的效果不是很好</span></p>
+<p>代码如下：   </p>
+<pre><code>&lt;!DOCTYPE HTML&gt;  
+&lt;html&gt;  
+&lt;head&gt;  
+&lt;title&gt;授权页面&lt;/title&gt;  
+&lt;meta charset=&quot;utf-8&quot;&gt;  
+&lt;meta name=&quot;mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui&quot;&gt;
+&lt;meta name=&quot;author&quot; content=&quot;duandun&quot;&gt;
+&lt;link rel=&apos;stylesheet&apos; href=&apos;/libs/bootstrap/dist/css/bootstrap.css&apos; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/libs/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/libs/bootstrap/dist/js/bootstrap.js&quot;&gt;&lt;/script&gt;
+ &lt;!-- &lt;script type=&quot;text/javascript&quot; src=&quot;/libs/angularjs/angular.js&quot;&gt;&lt;/script&gt; --&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/grid.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/version.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/detector.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/formatinf.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/errorlevel.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bitmat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datablock.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/bmparser.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/datamask.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/rsdecoder.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256poly.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/gf256.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/decoder.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/qrcode.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/findpat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/alignpat.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/databr.js&quot;&gt;&lt;/script&gt;
+
+&lt;style&gt;
+    #qr-canvas {
+        position: relative;
+        top: -200px;
+        z-index: 2000;
+    }
+    .row {
+        margin-bottom: -20px;
+    }
+&lt;/style&gt;
+&lt;/head&gt;  
+&lt;body class=&quot;container text-center&quot; &gt;  
+&lt;div class=&quot;row&quot; &gt;
+    &lt;video id=&quot;video&quot; width=&quot;300&quot; height=&quot;300&quot; autoplay&gt;&lt;/video&gt;        
+&lt;/div&gt;
+&lt;canvas id=&quot;qr-canvas&quot; width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/canvas&gt;
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-xs-6&quot;&gt;
+        &lt;canvas id=&quot;canvasA&quot; width=&quot;100&quot; height=&quot;100&quot; &gt;&lt;/canvas&gt;
+        &lt;input type=&quot;hidden&quot; id=&quot;inputA&quot;  &gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-xs-6&quot;&gt;
+        &lt;canvas id=&quot;canvasB&quot; width=&quot;100&quot; height=&quot;100&quot; &gt;&lt;/canvas&gt;
+        &lt;input type=&quot;hidden&quot; id=&quot;inputB&quot; &gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-xs-4&quot;&gt;
+        &lt;a type=&quot;button&quot; value=&quot;授权机&quot; id=&quot;btn1&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot;&gt;授权机&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-xs-4&quot;&gt;
+        &lt;a type=&quot;button&quot; id=&quot;send&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot; onclick=&quot;javascript:send();&quot; disabled=&quot;disabled&quot;&gt;登陆&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-xs-4&quot;&gt;
+        &lt;a type=&quot;button&quot; value=&quot;被授权机&quot; id=&quot;btn2&quot; class=&quot;btn btn-primary&quot; href=&quot;javascript:;&quot;&gt;被授权机&lt;/a&gt;  
+    &lt;/div&gt;   
+&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt; 
+
+// Put event listeners into place
+
+function send() {
+alert($(&quot;#inputA&quot;).val() + &quot;   &quot; + $(&quot;#inputB&quot;).val());
+}
+
+window.addEventListener(&quot;DOMContentLoaded&quot;, function() {
+
+// Grab elements, create settings, etc.
+var canvas = document.getElementById(&quot;qr-canvas&quot;),
+    context = canvas.getContext(&quot;2d&quot;),
+    video = document.getElementById(&quot;video&quot;), 
+    videoArray = [],
+    btn1 = document.getElementById(&quot;btn1&quot;),
+    btn2 = document.getElementById(&quot;btn2&quot;),
+    canvasA = document.getElementById(&quot;canvasA&quot;),
+    canvasB = document.getElementById(&quot;canvasB&quot;),
+    errBack = function(error) {
+        console.log(&quot;Video capture error: &quot;, error.code); 
+    };
+
+// 获取设备的媒体数据
+navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+// 将canvas图像转换为黑白图片
+function imageConvertToGray(ctx){ 
+    var length = canvas.width * canvas.height,
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); 
+    for (var i = 0; i &lt; length * 4; i += 4) { 
+        var myRed = imageData.data[i]; 
+        var myGreen = imageData.data[i + 1]; 
+        var myBlue = imageData.data[i + 2]; 
+        myGray = parseInt((myRed + myGreen + myBlue) / 3); 
+        imageData.data[i] = myGray; 
+        imageData.data[i + 1] = myGray; 
+        imageData.data[i + 2] = myGray; 
+    } 
+    ctx.putImageData(imageData, 0, 0); 
+} 
+
+// 获取设备的摄像头信息id
+function gotSources(sourceInfos) {
+  for (var i = 0; i !== sourceInfos.length; ++i) {
+    var sourceInfo = sourceInfos[i];
+    if (sourceInfo.kind === &apos;video&apos;) {
+      videoArray.push(sourceInfo.id);
+      // alert(videoArray);
+    } else {
+      console.log(&apos;Some other kind of source: &apos;, sourceInfo);
+    }
+  }
+  var constraints = {
+        video: {
+          optional: [{
+            sourceId: videoArray[1]
+          }]
+        }
+    };
+  start(constraints);
+}
+
+// 进行扫描任务
+function scan() {
+    if (typeof MediaStreamTrack === &apos;undefined&apos; ||
+        typeof MediaStreamTrack.getSources === &apos;undefined&apos;) {
+        alert(&apos;This browser does not support MediaStreamTrack.\n\nTry Chrome.&apos;);
+        var constraints = {
+            video: true
+        };
+        start(constraints);
+    } else {
+      MediaStreamTrack.getSources(gotSources);
+    }
+ }
+
+ // 
+function successCallback(stream) {
+  window.stream = stream; // make stream available to console
+  video.src = window.URL.createObjectURL(stream);
+  video.play();
+}
+
+function errorCallback(error) {
+  console.log(&apos;navigator.getUserMedia error: &apos;, error);
+}
+
+// 扫描二维码事件
+function recEvent(canvasDis) {
+    var $input, btn;
+    if (canvasDis.getAttribute(&quot;id&quot;)===&quot;canvasA&quot;) {
+            $input = $(&quot;#inputA&quot;);
+            btn = document.getElementById(&quot;btn1&quot;);
+    } else if (canvasDis.getAttribute(&quot;id&quot;)===&quot;canvasB&quot;) {
+            $input = $(&quot;#inputB&quot;);
+            btn = document.getElementById(&quot;btn2&quot;);
+    }
+    contextDis = canvasDis.getContext(&quot;2d&quot;);
+    // 每20毫秒取一个图像并进行二维码解析
+    window.i = setInterval(function() {
+          //  context.drawImage(video, 140,220,200,200,0,0,200,200);
+          context.drawImage(video, 140,220,300,300,0,0,200,200);
+            //为提高速度，可以不转换为黑白图像
+           // imageConvertToGray(context);
+             try{
+                 qrcode.callback = function(data) {
+                    alert(data);
+                    console.log(&apos;the data is : &apos; + data);
+
+                    // 解析成功后，将解析得到的数据传入到对应隐藏域中
+                    $input.val(data);
+
+                    if ($(&quot;#inputA&quot;).val() &amp;&amp; $(&quot;#inputB&quot;).val()) {
+                        $(&quot;#send&quot;).removeAttr(&quot;disabled&quot;);
+                    }
+                    video.pause();
+                    contextDis.putImageData(context.getImageData(0,0,canvas.width, canvas.height),0,0);
+                    context.clearRect(0,0,200,200); 
+                    btn.style.backgroundColor = &apos;#CC6633&apos;;
+                    btn.style.borderColor = &apos;#CC6633&apos;;
+
+                    };
+                 qrcode.decode();          
+                  } catch(e) {           
+                    console.log(&apos;unable to read qr code&apos;);
+                }
+        }, 20);
+}
+
+// 绑定授权机按钮事件
+video.addEventListener(&apos;pause&apos;, function() {
+        clearInterval(i);
+});
+
+// 绑定授权机按钮事件
+btn1.addEventListener(&apos;click&apos;, function() {
+    $(video).one(&apos;play&apos;, function() {
+        recEvent(canvasA);
+    });
+    this.setAttribute(&apos;style&apos;, &apos;&apos;);
+    scan();
+});
+
+// 绑定被授权机按钮事件
+btn2.addEventListener(&apos;click&apos;, function() {
+    $(video).one(&apos;play&apos;, function() {
+        recEvent(canvasB);
+    });
+      this.setAttribute(&apos;style&apos;, &apos;&apos;);
+     scan();
+});
+
+function start(constraints) {
+  if (!!window.stream) {
+    video.src = null;
+    window.stream.stop();
+  }
+    navigator.getUserMedia(constraints, successCallback, errorCallback);
+}
+}, false);
+
+&lt;/script&gt;  
+&lt;/body&gt;  
+&lt;/html&gt;  </code></pre><h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p><img src="/img/html5/demo.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/javascript/">javascript</a><a href="/tags/分享/">分享</a><a href="/tags/html5/">html5</a><a href="/tags/qrcode/">qrcode</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://blog.chruyo.com/2015/08/06/html5Camera/" data-title="使用Html5完成客户端扫描识别二维码 | Duandun" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/10/angularjs-tutorial/step0/" title="Angularjs Tutorial-step0">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Angularjs Tutorial-step0</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/08/01/angularjs-tutorial/prepare/"  title="Angularjs Tutorial">
+ <strong>下一篇：</strong><br/> 
+ <span>Angularjs Tutorial
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <div class="toc-title">文章目录</div>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工作"><span class="toc-number">1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用express-generator初始化一个项目"><span class="toc-number">2.</span> <span class="toc-text">使用express-generator初始化一个项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#言归正传"><span class="toc-number">3.</span> <span class="toc-text">言归正传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#说了这么多，也该开始正题了"><span class="toc-number">3.1.</span> <span class="toc-text">说了这么多，也该开始正题了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现原理"><span class="toc-number">3.2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现效果"><span class="toc-number">3.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+
+		<div class="author"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/duandun" target="_blank" title="weibo"></a>
+		
+		
+		
+		
+		
+		
+		<a href="http://user.qzone.qq.com/609782646/main" target="_blank" title="qzone" class="icon-qzone"></a>
+		
+		
+		<a href="https://plus.google.com/115635956630112675477/about" target="_blank" class="icon-google_plus" title="Google+"></a>	
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/日志/" title="日志">日志<sup>16</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/D3js/" style="font-size: 10px;">D3js</a> <a href="/tags/angularjs/" style="font-size: 12px;">angularjs</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/html5/" style="font-size: 10px;">html5</a> <a href="/tags/javascript/" style="font-size: 18px;">javascript</a> <a href="/tags/pages/" style="font-size: 10px;">pages</a> <a href="/tags/qrcode/" style="font-size: 10px;">qrcode</a> <a href="/tags/singleton/" style="font-size: 10px;">singleton</a> <a href="/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/" style="font-size: 16px;">《javascript》权威指南</a> <a href="/tags/%E5%88%86%E4%BA%AB/" style="font-size: 10px;">分享</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 20px;">博客</a> <a href="/tags/%E5%8F%88%E6%B4%BB%E4%BA%86/" style="font-size: 10px;">又活了</a> <a href="/tags/%E6%91%84%E5%BD%B1/" style="font-size: 10px;">摄影</a> <a href="/tags/%E6%9D%82%E9%A1%B9/" style="font-size: 14px;">杂项</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<!-- <div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div> -->
+	
+	
+	<section class="info">
+		<p> It was a dark and stormy night. ...  <br/>
+			</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/duandun" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="https://plus.google.com/115635956630112675477/about" target="_blank" class="icon-google_plus" title="Google+"></a>
+		
+		
+		<a href="mailto:duandun2012@163.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+		
+		<a href="http://user.qzone.qq.com/609782646/main" target="_blank" class="icon-qzone" title="qzone"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2020 
+		
+		<a href="/about" target="_blank" title="Duandun JQ">Duandun JQ</a>
+		
+		<br>
+		<br>
+		
+		<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+	var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1255608118'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1255608118%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+	
+<!-- Analytics End -->
+		</p>
+
+
+</div>
+</footer>
+    <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/prettify/prettify.js"></script>
+<script src="/js/prettify/prettify.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+  $('pre').addClass('prettyprint '); //添加Google code Hight需要的class
+  prettyPrint();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(20,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+      
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(80,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#imglogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'duandun';
+
+// (function(){
+//   var dsq = document.createElement('script');
+//   dsq.type = 'text/javascript';
+//   dsq.async = true;
+//   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+//   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+// }());
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+
+
+// (function(){
+//   var dsq = document.createElement('script');
+//   dsq.type = 'text/javascript';
+//   dsq.async = true;
+//   dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+//   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+// }());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+
+
+ <!--<script>
+  $(document).ready(function($) {
+    $('[data-toggle="popover"]').popover();
+    var width = 700, height = 520, format = d3.format(",d");
+    var color = d3.scale.category20();
+
+    var force = d3.layout.force()
+        .charge(-1500)
+        .linkDistance(80)
+        // .alpha(0)
+        .size([width, height-160]);
+
+    var svg = d3.select(".article-content").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    d3.json("/miserable.json", function(error, graph) {
+      if (error) throw error;
+
+      var root = graph.nodes[0];
+      root.fixed = true;
+      // $.each(graph.nodes, function(i, item) {
+      //   item.fixed = true;
+      // });
+      // root.fixed = true;
+
+      force
+          .nodes(graph.nodes)
+          .links(graph.links)
+          .start();
+
+      var link = svg.selectAll(".link")
+          .data(graph.links)
+        .enter().append("line")
+          .attr("class", "link")
+          // .attr("x1", function(d) { return 350 + Math.sin((2*Math.PI / 360) * d.source.radi) * 100; })
+          // .attr("y1", function(d) { return 260 - Math.cos((2*Math.PI / 360) * d.source.radi) * 100 ; })
+          // .attr("x2", function(d) { return 350 + Math.sin((2*Math.PI / 360) * d.target.radi) * 100; })
+          // .attr("y2", function(d) { return 260 - Math.cos((2*Math.PI / 360) * d.target.radi) * 100 ; })
+          .style("stroke-width", function(d) { return Math.sqrt(d.value); })
+          .style("stroke", function(d) { return color(d.group); });
+      // var orx, ory;
+      // var drag = force.drag()
+      //                 .on("dragstart", function(d, i) {
+      //                   orx = d.x;
+      //                   ory = d.y;
+      //                   console.log(orx);
+      //                 })
+      //                 .on("dragend", function(d, i) {
+      //                   console.log(i + "__拖拽结束");
+      //                   // console.log(d);
+      //                   d3.select(this).select("circle")
+      //                                 .attr("cx", orx)
+      //                                 .attr("cy", ory);
+      //                 });
+
+      var node = svg.selectAll(".node")
+          .data(graph.nodes)
+        .enter().append("g")
+        .on("mouseenter", function(d) {
+            d3.select(this).select("circle").transition()
+                                          .duration(400)
+                                          .attr("r", d.r+5);
+            $(this).find("circle").popover('show');
+        })
+        .on("mouseleave", function(d) {
+            d3.select(this).select("circle").transition()
+                                          .duration(400)
+                                          .attr("r", d.r);
+            $(this).find("circle").popover('hide');
+        })
+        .call(force.drag)
+        .attr("class", "node");
+
+        var hudu = (2*Math.PI / 360) * 30;
+
+  //      var X = a + Math.sin(hudu) * r;
+        node.append("circle")
+            .attr("r", function(d){ return d.r; })
+            // .attr("cx", function(d){ return 350 + Math.sin((2*Math.PI / 360) * d.radi) * 100; })
+            // .attr("cy", function(d){ return 260 - Math.cos((2*Math.PI / 360) * d.radi) * 100 ; })
+            .style("fill", function(d) { return color(d.group); })
+            .attr("data-toggle", "popover")
+            .attr("data-content", function(d) {
+              return d.name;
+            })
+            .attr("data-container", "body");
+
+        node.append("text")
+            // .attr("x", function(d){ return 350 + Math.sin((2*Math.PI / 360) * d.radi) * 100; })
+            // .attr("y", function(d){ return 260 - Math.cos((2*Math.PI / 360) * d.radi) * 100 ;})
+            .style("text-anchor", "middle")
+            .text(function(d) {
+              return d.name;
+            })
+            .attr("dy", ".3em");
+
+      var dashline = svg.append("line")
+                      .attr("x1", 450)
+                      .attr("y1", 260)
+                      .attr("x2", 700)
+                      .attr("y2", 260)
+                      .style("stroke-dasharray", 4)
+                      .attr("stroke-width", 2)
+                      .attr("stroke", color(1));
+
+      force.on("tick", function(d) {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+        node.selectAll("circle").attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+        node.selectAll("text").attr("x", function(d){ return d.x; })
+                            .attr("y", function(d){ return d.y; })
+                            .style("text-anchor", "middle")
+                            .attr("dy", ".3em");
+      });
+
+    });
+
+   });
+
+ </script>
+-->
+
+<!-- <script>
+    $('[data-toggle="popover"]').popover();
+    var w = 800,
+        h = 800,
+        node,
+        link,
+        root;
+    var color1 = d3.scale.category20();
+
+    var force = d3.layout.force()
+        .on("tick", tick)
+        .charge(function(d) { return d._children ? -d.size / 100 : -30; })
+        .linkDistance(function(d) { return d.target._children ? 80 : 30; })
+        .size([w, h - 160]);
+
+    var vis = d3.select(".article-content").append("svg:svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    d3.json("/flare.json", function(json) {
+      root = json;
+      root.fixed = true;
+      root.x = w / 2;
+      root.y = h / 2 - 80;
+      update();
+    });
+
+    function update() {
+      var nodes = flatten(root),
+          links = d3.layout.tree().links(nodes);
+
+      // Restart the force layout.
+      force
+          .nodes(nodes)
+          .links(links)
+          .start();
+
+      // Update the links…
+      link = vis.selectAll("line.link")
+          .data(links, function(d) { return d.target.id; });
+
+      // Enter any new links.
+      link.enter().insert("svg:line", ".node")
+          .attr("class", "link")
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; })
+          .attr("stroke", function(d) { return color1(2);});
+
+      // Exit any old links.
+      link.exit().remove();
+
+      // Update the nodes…
+      node = vis.selectAll("circle.node")
+          .data(nodes, function(d) { return d.id; })
+          .style("fill", color);
+
+      node.transition()
+          .attr("r", function(d) { return d.children ? 4.5 : Math.sqrt(d.size) / 10; });
+
+      // Enter any new nodes.
+      node.enter().append("svg:circle")
+          .attr("class", "node")
+          .attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; })
+          .attr("r", function(d) { return d.children ? 4.5 : Math.sqrt(d.size) / 10; })
+          .style("fill", color)
+          .attr("data-toggle", "popover")
+          .attr("data-content", function(d) {
+              return d.name;
+            })
+          .attr("data-container", "body")
+          .on("mouseenter", function() {
+            $(this).popover('show');
+          })
+          .on("mouseleave", function() {
+            $(this).popover('hide');
+          })
+        //  .on("click", click)
+          .call(force.drag);
+
+      // Exit any old nodes.
+      node.exit().remove();
+    }
+
+    function tick() {
+      link.attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+      node.attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; });
+    }
+
+    // Color leaf nodes orange, and packages white or blue.
+    function color(d) {
+      return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+    }
+
+    // Toggle children on click.
+    function click(d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      update();
+    }
+
+    // Returns a list of all nodes under the root.
+    function flatten(root) {
+      var nodes = [], i = 0;
+
+      function recurse(node) {
+        if (node.children) node.size = node.children.reduce(function(p, v) { return p + recurse(v); }, 0);
+        if (!node.id) node.id = ++i;
+        nodes.push(node);
+        return node.size;
+      }
+
+      root.size = recurse(root);
+      return nodes;
+    }
+ </script>
+ -->
+
+ <script>
+
+ // $(document).ready(function(){
+ //    var w = 700,
+ //        h = 600;
+
+ //    var nodes = d3.range(200).map(function() { return {radius: Math.random() * 12 + 4}; }),
+ //        color = d3.scale.category10();
+
+ //    var force = d3.layout.force()
+ //        .gravity(0.05)
+ //        .charge(function(d, i) { return i ? 0 : -2000; })
+ //        .nodes(nodes)
+ //        .size([w, h]);
+
+ //    var root = nodes[0];
+ //    root.radius = 0;
+ //    root.fixed = true;
+
+ //    force.start();
+
+ //    var svg = d3.select(".article-content").append("svg:svg")
+ //        .attr("width", w)
+ //        .attr("height", h);
+
+ //    svg.selectAll("circle")
+ //        .data(nodes.slice(1))
+ //      .enter().append("svg:circle")
+ //        .attr("r", function(d) { return d.radius - 2; })
+ //        .style("fill", function(d, i) { return color(i % 3); });
+
+ //    force.on("tick", function(e) {
+ //      var q = d3.geom.quadtree(nodes),
+ //          i = 0,
+ //          n = nodes.length;
+
+ //      while (++i < n) {
+ //        q.visit(collide(nodes[i]));
+ //      }
+
+ //      svg.selectAll("circle")
+ //          .attr("cx", function(d) { return d.x; })
+ //          .attr("cy", function(d) { return d.y; });
+ //    });
+
+ //    svg.on("mousemove", function() {
+ //      var p1 = d3.mouse(this);
+ //      root.px = p1[0];
+ //      root.py = p1[1];
+ //      force.resume();
+ //    });
+
+ //    function collide(node) {
+ //      var r = node.radius + 16,
+ //          nx1 = node.x - r,
+ //          nx2 = node.x + r,
+ //          ny1 = node.y - r,
+ //          ny2 = node.y + r;
+ //      return function(quad, x1, y1, x2, y2) {
+ //        if (quad.point && (quad.point !== node)) {
+ //          var x = node.x - quad.point.x,
+ //              y = node.y - quad.point.y,
+ //              l = Math.sqrt(x * x + y * y),
+ //              r = node.radius + quad.point.radius;
+ //          if (l < r) {
+ //            l = (l - r) / l * .5;
+ //            node.x -= x *= l;
+ //            node.y -= y *= l;
+ //            quad.point.x += x;
+ //            quad.point.y += y;
+ //          }
+ //        }
+ //        return x1 > nx2
+ //            || x2 < nx1
+ //            || y1 > ny2
+ //            || y2 < ny1;
+ //      };
+ //    }
+
+ // });
+
+
+ </script>
+
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<script>
+var option = {
+  engineKey: '7b0d0b4a0bf175e73f7e'
+};
+(function(w,d,t,u,n,s,e){
+  s = d.createElement(t);
+  s.src = u;
+  s.async = 1;
+  w[n] = function(r){
+    w[n].opts = r;
+  };
+  e = d.getElementsByTagName(t)[0];
+  e.parentNode.insertBefore(s, e);
+})(window,document,'script','//tinysou-cdn.b0.upaiyun.com/ts.js','_ts');
+_ts(option);
+</script>
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
