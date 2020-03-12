@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Duandun</title>
   
-  
+  <subtitle>已被女神带走~ 😆</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.chruyo.com/"/>
@@ -105,19 +105,20 @@
   </entry>
   
   <entry>
-    <title>Chapter 7 数组</title>
-    <link href="http://blog.chruyo.com/2016/03/19/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_7_Array/"/>
-    <id>http://blog.chruyo.com/2016/03/19/《Javascript》权威指南/Chapter_7_Array/</id>
+    <title>null与undefined的区别</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E6%9D%82%E9%A1%B9/null%E4%B8%8Eundefined%E5%8C%BA%E5%88%AB/"/>
+    <id>http://blog.chruyo.com/2016/03/19/杂项/null与undefined区别/</id>
     <published>2016-03-18T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.288Z</updated>
+    <updated>2020-03-12T09:52:16.289Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="7-2-数组元素的读和写"><a href="#7-2-数组元素的读和写" class="headerlink" title="7.2 数组元素的读和写"></a>7.2 数组元素的读和写</h2><p>当使用小于2^32的非负整数作为属性名时数组会自动维护其length属性值。<br>也可以使用负数或非整数来索引数组。在这种情况下，数值转换为字符串，字符串作为属性名来用。</p><pre><code>a[-1.234] = true;  // 这将创建一个名为&quot;1.234&quot;的属性a[&quot;1000&quot;] = 0;     // 这是数组的第1001个元素a[1.000]           // 和a[1]相等</code></pre><p>事实上数组索引仅仅是对象属性名的一种特殊类型，这意味着javascript数组没有“越界”错误的概念。当试图查询任何对象中不存在的属性时，不会报错，只会得到Undefined值。</p><h2 id="7-3-稀疏数组"><a href="#7-3-稀疏数组" class="headerlink" title="7.3 稀疏数组"></a>7.3 稀疏数组</h2><p>稀疏数组就是包含从0开始的不连续索引的数组。通常，数组的Length属性值代表数组中元素的个数。如何数组是稀疏的，length属性值大于元素的个数。可以用Array()构造函数或简单地指定数组的索引值大于当前的数组长度来创建稀疏数组。</p><pre><code>a = new Array(5);    // 数组没有元素，但是a.length是5a = [];              // 创建一个空数组，length = 0a[1000] = 0;         // 赋值添加一个元素，但是设置Length为1001</code></pre><p>注意，当在数组直接量中省略值时不会创建稀疏数组。省略的元素在数组中是存在的，其值为undefined。这和数组元素根本不存在是有一定微妙的区别的。可以用in操作符检测两者之间的区别：</p><pre><code>var a1 = [,,,];     // 数组是[undefined, undefined, undefined]var a2 = new Array(3);    // 该数组根本没有元素0 in a1             // =&gt; true: a1在索引0处有一个元素0 in a2             // =&gt; false: a2在索引0处没有元素</code></pre><h2 id="7-4-数组长度"><a href="#7-4-数组长度" class="headerlink" title="7.4 数组长度"></a>7.4 数组长度</h2><p>每个数组都有一个Length属性，就是这个属性使其区别于常规的javascript对象。</p><h2 id="7-5-数组元素的添加和删除"><a href="#7-5-数组元素的添加和删除" class="headerlink" title="7.5 数组元素的添加和删除"></a>7.5 数组元素的添加和删除</h2><p>可以像删除对象属性一样使用delete运算符来删除数组元素：</p><pre><code>a = [1,2,3];delete a[1];      // a 在索引1的位置不再有元素1 in a;           // =&gt; false, 数组索引1并未在数组中定义a.length          // =&gt; 3: delete操作并不影响数组长度</code></pre><h2 id="7-6-数组的遍历"><a href="#7-6-数组的遍历" class="headerlink" title="7.6 数组的遍历"></a>7.6 数组的遍历</h2><p>遍历数组的时候，要想排除null、undefined和不存在的元素，如下：</p><pre><code>for(var i = 0; i &lt; a.length; i++) {    if(!a[i]) continue;   // 跳过null、undefined和不存在的元素    // 循环体}</code></pre><p>可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量 。不存在的索引将不会遍历到：</p><pre><code>for(var index in sparseArray) {    var value = sparseArray[index];}</code></pre><h2 id="7-8-数组的函数"><a href="#7-8-数组的函数" class="headerlink" title="7.8 数组的函数"></a>7.8 数组的函数</h2><h3 id="7-8-6-splice"><a href="#7-8-6-splice" class="headerlink" title="7.8.6 splice()"></a>7.8.6 splice()</h3><p>Array.splice()方法是在数组中插入或删除元素的通用方法。<br>splice()的第一个参数制定了插入和（或）删除的起始位置。第二个参数制定了应该从数组中删除的元素的个数。如果省略第二个参数，从起始点开始到数组结尾的所有元素都将被删除。splice()返回一个由删除元素组成的数组，或者如果没有删除元素就返回一个空数组。例如：</p><pre><code>var a = [1,2,3,4,5,6,7,8];a.splice(4);  // 返回[5,6]; a是[1,2,3,4]a.splice(1,2);  // 返回[2,3]; a是[1,4]a.splice(1,1);  // 返回[4]; a是[1]</code></pre><p>splice()的前两个参数指定了需要删除的数组元素。紧随其后的任意个数的参数指定了需要插入到数组中的元素，从第一个参数指定的位置开始插入。例如：</p><pre><code>var a = [1,2,3,4,5];a.splice(2,0,&apos;a&apos;,&apos;b&apos;);   // 返回[]; a是[1,2,&apos;a&apos;,&apos;b&apos;,3,4,5]a.splice(2,2,[1,2],3);   // 返回[&apos;a&apos;,&apos;b&apos;]; a是[1,2,[1,2],3,3,4,5]</code></pre><h3 id="7-9-2-map"><a href="#7-9-2-map" class="headerlink" title="7.9.2 map()"></a>7.9.2 map()</h3><p>map()方法将调用的数组的每个元素传递给指定的函数，并返回一个数组，它包含该函数的返回值。例如：</p><pre><code>a = [1,2,3];b = a.map(function(x) {return x*x; });   // b是[1,4,9]</code></pre><h3 id="7-9-5-reduce-和reduceRight"><a href="#7-9-5-reduce-和reduceRight" class="headerlink" title="7.9.5 reduce()和reduceRight()"></a>7.9.5 reduce()和reduceRight()</h3><p>reduce()和reduceRight()方法使用指定的函数将数组元素进行组合，生成单个值。这在函数式编程中是常见的操作，也可以称为“注入”和“折叠”。例如：</p><pre><code>var a  = [1,2,3,4,5];var sum = a.reduce(function(x, y) {return x + y}, 0);     // 数组求和var product = a.reduce(function(x, y) {return x*y}, 1);    // 数组秋积var max = a.reduce(function(x, y) { return (x &gt; y)?x:y; });   // 求最大值</code></pre><p>reduce()需要两个参数。第一个是执行化简操作的函数。化简函数的任务就是用某种方法把两个值组合或化简为一个值，并返回化简后的值。在上述例子中，函数通过加法，乘法或取最大值的方法组合两个值。第二个（可选）的参数是一个传递给函数的初始值。<br>reduceRight()的工作原理和reduce()一样，不同的是它按照数组索引从高到低（从右到左）处理数组。</p><h2 id="7-10-数组类型"><a href="#7-10-数组类型" class="headerlink" title="7.10 数组类型"></a>7.10 数组类型</h2><p>在 ECMAScript 5 中，可以使用Array.isArray()函数来做数组类型的判断：</p><pre><code>Array.isArray([]);   // =&gt; trueArray.isArray({});   // =&gt; false</code></pre><p>在ECMAScript 3 中isArray()函数的代码可以这样写：</p><pre><code>var isArray = Function.isArray || function(o) {    return typeof o === &quot;object&quot; &amp;&amp;     Object.prototype.toString.call(o) === &quot;[object Array]&quot;;};</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?</p><p>Undefined类型只有一个值，即undefined。当声明的变量还未被初始化时，变量的默认值为undefined。<br>Null类型也只有一个值，即null。null用来表示尚未存在的对象，常用来表示函数企图返回一个不存在的对象。</p><pre><code>var oValue;  alert(oValue == undefined); //output &quot;true&quot;  </code></pre><p>这段代码显示为true,代表oVlaue的值即为undefined，因为我们没有初始化它。</p><pre><code>alert(null == document.getElementById(&apos;notExistElement&apos;));  </code></pre><p>当页面上不存在id为”notExistElement”的DOM节点时，这段代码显示为”true”，因为我们尝试获取一个不存在的对象。</p><pre><code>alert(typeof undefined); //output &quot;undefined&quot;  alert(typeof null); //output &quot;object&quot;  </code></pre><p>第一行代码很容易理解，undefined的类型为Undefined；第二行代码却让人疑惑，为什么null的类型又是Object了呢？其实这是JavaScript最初实现的一个错误，后来被ECMAScript沿用下来。在今天我们可以解释为，null即是一个不存在的对象的占位符，但是在实际编码时还是要注意这一特性。</p><pre><code>alert(null == undefined); //output &quot;true&quot;  </code></pre><p>ECMAScript认为undefined是从null派生出来的，所以把它们定义为相等的。但是，如果在一些情况下，我们一定要区分这两个值，那应该怎么办呢？可以使用下面的两种方法。</p><pre><code>alert(null === undefined); //output &quot;false&quot;  alert(typeof null == typeof undefined); //output &quot;false&quot;  </code></pre><p>使用typeof方法在前面已经讲过，null与undefined的类型是不一样的，所以输出”false”。而===代<br>表绝对等于，在这里null === undefined输出false。</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;7-2-数组元素的读和写&quot;&gt;&lt;a href=&quot;#7-2-数组元素的读和写&quot; class=&quot;headerlink&quot; title=&quot;7.2 数组元素的读和写&quot;&gt;&lt;/a&gt;7.2 数组元素的读和写&lt;/h2&gt;&lt;p&gt;当使用小于2^32的非负整数作为属性名时数组会自动维护其le
+        &lt;p&gt;在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?&lt;/p&gt;
+&lt;p&gt;Undefined类型只有一个值，即undefined。当声明的变量还
       
     
     </summary>
@@ -129,7 +130,7 @@
     
       <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
-      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+      <category term="杂项" scheme="http://blog.chruyo.com/tags/%E6%9D%82%E9%A1%B9/"/>
     
   </entry>
   
@@ -165,20 +166,19 @@
   </entry>
   
   <entry>
-    <title>null与undefined的区别</title>
-    <link href="http://blog.chruyo.com/2016/03/19/%E6%9D%82%E9%A1%B9/null%E4%B8%8Eundefined%E5%8C%BA%E5%88%AB/"/>
-    <id>http://blog.chruyo.com/2016/03/19/杂项/null与undefined区别/</id>
+    <title>Chapter 7 数组</title>
+    <link href="http://blog.chruyo.com/2016/03/19/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_7_Array/"/>
+    <id>http://blog.chruyo.com/2016/03/19/《Javascript》权威指南/Chapter_7_Array/</id>
     <published>2016-03-18T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.289Z</updated>
+    <updated>2020-03-12T09:52:16.288Z</updated>
     
-    <content type="html"><![CDATA[<p>在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?</p><p>Undefined类型只有一个值，即undefined。当声明的变量还未被初始化时，变量的默认值为undefined。<br>Null类型也只有一个值，即null。null用来表示尚未存在的对象，常用来表示函数企图返回一个不存在的对象。</p><pre><code>var oValue;  alert(oValue == undefined); //output &quot;true&quot;  </code></pre><p>这段代码显示为true,代表oVlaue的值即为undefined，因为我们没有初始化它。</p><pre><code>alert(null == document.getElementById(&apos;notExistElement&apos;));  </code></pre><p>当页面上不存在id为”notExistElement”的DOM节点时，这段代码显示为”true”，因为我们尝试获取一个不存在的对象。</p><pre><code>alert(typeof undefined); //output &quot;undefined&quot;  alert(typeof null); //output &quot;object&quot;  </code></pre><p>第一行代码很容易理解，undefined的类型为Undefined；第二行代码却让人疑惑，为什么null的类型又是Object了呢？其实这是JavaScript最初实现的一个错误，后来被ECMAScript沿用下来。在今天我们可以解释为，null即是一个不存在的对象的占位符，但是在实际编码时还是要注意这一特性。</p><pre><code>alert(null == undefined); //output &quot;true&quot;  </code></pre><p>ECMAScript认为undefined是从null派生出来的，所以把它们定义为相等的。但是，如果在一些情况下，我们一定要区分这两个值，那应该怎么办呢？可以使用下面的两种方法。</p><pre><code>alert(null === undefined); //output &quot;false&quot;  alert(typeof null == typeof undefined); //output &quot;false&quot;  </code></pre><p>使用typeof方法在前面已经讲过，null与undefined的类型是不一样的，所以输出”false”。而===代<br>表绝对等于，在这里null === undefined输出false。</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="7-2-数组元素的读和写"><a href="#7-2-数组元素的读和写" class="headerlink" title="7.2 数组元素的读和写"></a>7.2 数组元素的读和写</h2><p>当使用小于2^32的非负整数作为属性名时数组会自动维护其length属性值。<br>也可以使用负数或非整数来索引数组。在这种情况下，数值转换为字符串，字符串作为属性名来用。</p><pre><code>a[-1.234] = true;  // 这将创建一个名为&quot;1.234&quot;的属性a[&quot;1000&quot;] = 0;     // 这是数组的第1001个元素a[1.000]           // 和a[1]相等</code></pre><p>事实上数组索引仅仅是对象属性名的一种特殊类型，这意味着javascript数组没有“越界”错误的概念。当试图查询任何对象中不存在的属性时，不会报错，只会得到Undefined值。</p><h2 id="7-3-稀疏数组"><a href="#7-3-稀疏数组" class="headerlink" title="7.3 稀疏数组"></a>7.3 稀疏数组</h2><p>稀疏数组就是包含从0开始的不连续索引的数组。通常，数组的Length属性值代表数组中元素的个数。如何数组是稀疏的，length属性值大于元素的个数。可以用Array()构造函数或简单地指定数组的索引值大于当前的数组长度来创建稀疏数组。</p><pre><code>a = new Array(5);    // 数组没有元素，但是a.length是5a = [];              // 创建一个空数组，length = 0a[1000] = 0;         // 赋值添加一个元素，但是设置Length为1001</code></pre><p>注意，当在数组直接量中省略值时不会创建稀疏数组。省略的元素在数组中是存在的，其值为undefined。这和数组元素根本不存在是有一定微妙的区别的。可以用in操作符检测两者之间的区别：</p><pre><code>var a1 = [,,,];     // 数组是[undefined, undefined, undefined]var a2 = new Array(3);    // 该数组根本没有元素0 in a1             // =&gt; true: a1在索引0处有一个元素0 in a2             // =&gt; false: a2在索引0处没有元素</code></pre><h2 id="7-4-数组长度"><a href="#7-4-数组长度" class="headerlink" title="7.4 数组长度"></a>7.4 数组长度</h2><p>每个数组都有一个Length属性，就是这个属性使其区别于常规的javascript对象。</p><h2 id="7-5-数组元素的添加和删除"><a href="#7-5-数组元素的添加和删除" class="headerlink" title="7.5 数组元素的添加和删除"></a>7.5 数组元素的添加和删除</h2><p>可以像删除对象属性一样使用delete运算符来删除数组元素：</p><pre><code>a = [1,2,3];delete a[1];      // a 在索引1的位置不再有元素1 in a;           // =&gt; false, 数组索引1并未在数组中定义a.length          // =&gt; 3: delete操作并不影响数组长度</code></pre><h2 id="7-6-数组的遍历"><a href="#7-6-数组的遍历" class="headerlink" title="7.6 数组的遍历"></a>7.6 数组的遍历</h2><p>遍历数组的时候，要想排除null、undefined和不存在的元素，如下：</p><pre><code>for(var i = 0; i &lt; a.length; i++) {    if(!a[i]) continue;   // 跳过null、undefined和不存在的元素    // 循环体}</code></pre><p>可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量 。不存在的索引将不会遍历到：</p><pre><code>for(var index in sparseArray) {    var value = sparseArray[index];}</code></pre><h2 id="7-8-数组的函数"><a href="#7-8-数组的函数" class="headerlink" title="7.8 数组的函数"></a>7.8 数组的函数</h2><h3 id="7-8-6-splice"><a href="#7-8-6-splice" class="headerlink" title="7.8.6 splice()"></a>7.8.6 splice()</h3><p>Array.splice()方法是在数组中插入或删除元素的通用方法。<br>splice()的第一个参数制定了插入和（或）删除的起始位置。第二个参数制定了应该从数组中删除的元素的个数。如果省略第二个参数，从起始点开始到数组结尾的所有元素都将被删除。splice()返回一个由删除元素组成的数组，或者如果没有删除元素就返回一个空数组。例如：</p><pre><code>var a = [1,2,3,4,5,6,7,8];a.splice(4);  // 返回[5,6]; a是[1,2,3,4]a.splice(1,2);  // 返回[2,3]; a是[1,4]a.splice(1,1);  // 返回[4]; a是[1]</code></pre><p>splice()的前两个参数指定了需要删除的数组元素。紧随其后的任意个数的参数指定了需要插入到数组中的元素，从第一个参数指定的位置开始插入。例如：</p><pre><code>var a = [1,2,3,4,5];a.splice(2,0,&apos;a&apos;,&apos;b&apos;);   // 返回[]; a是[1,2,&apos;a&apos;,&apos;b&apos;,3,4,5]a.splice(2,2,[1,2],3);   // 返回[&apos;a&apos;,&apos;b&apos;]; a是[1,2,[1,2],3,3,4,5]</code></pre><h3 id="7-9-2-map"><a href="#7-9-2-map" class="headerlink" title="7.9.2 map()"></a>7.9.2 map()</h3><p>map()方法将调用的数组的每个元素传递给指定的函数，并返回一个数组，它包含该函数的返回值。例如：</p><pre><code>a = [1,2,3];b = a.map(function(x) {return x*x; });   // b是[1,4,9]</code></pre><h3 id="7-9-5-reduce-和reduceRight"><a href="#7-9-5-reduce-和reduceRight" class="headerlink" title="7.9.5 reduce()和reduceRight()"></a>7.9.5 reduce()和reduceRight()</h3><p>reduce()和reduceRight()方法使用指定的函数将数组元素进行组合，生成单个值。这在函数式编程中是常见的操作，也可以称为“注入”和“折叠”。例如：</p><pre><code>var a  = [1,2,3,4,5];var sum = a.reduce(function(x, y) {return x + y}, 0);     // 数组求和var product = a.reduce(function(x, y) {return x*y}, 1);    // 数组秋积var max = a.reduce(function(x, y) { return (x &gt; y)?x:y; });   // 求最大值</code></pre><p>reduce()需要两个参数。第一个是执行化简操作的函数。化简函数的任务就是用某种方法把两个值组合或化简为一个值，并返回化简后的值。在上述例子中，函数通过加法，乘法或取最大值的方法组合两个值。第二个（可选）的参数是一个传递给函数的初始值。<br>reduceRight()的工作原理和reduce()一样，不同的是它按照数组索引从高到低（从右到左）处理数组。</p><h2 id="7-10-数组类型"><a href="#7-10-数组类型" class="headerlink" title="7.10 数组类型"></a>7.10 数组类型</h2><p>在 ECMAScript 5 中，可以使用Array.isArray()函数来做数组类型的判断：</p><pre><code>Array.isArray([]);   // =&gt; trueArray.isArray({});   // =&gt; false</code></pre><p>在ECMAScript 3 中isArray()函数的代码可以这样写：</p><pre><code>var isArray = Function.isArray || function(o) {    return typeof o === &quot;object&quot; &amp;&amp;     Object.prototype.toString.call(o) === &quot;[object Array]&quot;;};</code></pre>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;在JavaScript中存在这样两种原始类型:Null与Undefined。这两种类型常常会使JavaScript的开发人员产生疑惑，在什么时候是Null，什么时候又是Undefined?&lt;/p&gt;
-&lt;p&gt;Undefined类型只有一个值，即undefined。当声明的变量还
+        &lt;h2 id=&quot;7-2-数组元素的读和写&quot;&gt;&lt;a href=&quot;#7-2-数组元素的读和写&quot; class=&quot;headerlink&quot; title=&quot;7.2 数组元素的读和写&quot;&gt;&lt;/a&gt;7.2 数组元素的读和写&lt;/h2&gt;&lt;p&gt;当使用小于2^32的非负整数作为属性名时数组会自动维护其le
       
     
     </summary>
@@ -190,7 +190,7 @@
     
       <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
-      <category term="杂项" scheme="http://blog.chruyo.com/tags/%E6%9D%82%E9%A1%B9/"/>
+      <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
     
   </entry>
   
@@ -222,34 +222,6 @@
   </entry>
   
   <entry>
-    <title>js深拷贝</title>
-    <link href="http://blog.chruyo.com/2016/03/02/%E6%9D%82%E9%A1%B9/jsClone/"/>
-    <id>http://blog.chruyo.com/2016/03/02/杂项/jsClone/</id>
-    <published>2016-03-01T16:00:00.000Z</published>
-    <updated>2020-03-12T09:52:16.289Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="JS深拷贝"><a href="#JS深拷贝" class="headerlink" title="JS深拷贝"></a>JS深拷贝</h2><pre><code>var cloneObj = function(obj){    var str, newobj = obj.constructor === Array ? [] : {};    if(typeof obj !== &apos;object&apos;){        return;    } else if(window.JSON){        str = JSON.stringify(obj), //系列化对象        newobj = JSON.parse(str); //还原    } else {        for(var i in obj){            newobj[i] = typeof obj[i] === &apos;object&apos; ?             cloneObj(obj[i]) : obj[i];         }    }    return newobj;};</code></pre><p>著作权归作者所有。<br>商业转载请联系作者获得授权，非商业转载请注明出处。<br>作者：青大虫<br>链接：<a href="http://www.zhihu.com/question/23031215/answer/31944721" target="_blank" rel="noopener">http://www.zhihu.com/question/23031215/answer/31944721</a><br>来源：知乎</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;JS深拷贝&quot;&gt;&lt;a href=&quot;#JS深拷贝&quot; class=&quot;headerlink&quot; title=&quot;JS深拷贝&quot;&gt;&lt;/a&gt;JS深拷贝&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;var cloneObj = function(obj){
-    var str, newobj 
-      
-    
-    </summary>
-    
-      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
-    
-    
-      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Chapter 6 对象</title>
     <link href="http://blog.chruyo.com/2016/03/02/%E3%80%8AJavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/Chapter_6_Object/"/>
     <id>http://blog.chruyo.com/2016/03/02/《Javascript》权威指南/Chapter_6_Object/</id>
@@ -275,6 +247,34 @@
       <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
       <category term="《javascript》权威指南" scheme="http://blog.chruyo.com/tags/%E3%80%8Ajavascript%E3%80%8B%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>js深拷贝</title>
+    <link href="http://blog.chruyo.com/2016/03/02/%E6%9D%82%E9%A1%B9/jsClone/"/>
+    <id>http://blog.chruyo.com/2016/03/02/杂项/jsClone/</id>
+    <published>2016-03-01T16:00:00.000Z</published>
+    <updated>2020-03-12T09:52:16.289Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="JS深拷贝"><a href="#JS深拷贝" class="headerlink" title="JS深拷贝"></a>JS深拷贝</h2><pre><code>var cloneObj = function(obj){    var str, newobj = obj.constructor === Array ? [] : {};    if(typeof obj !== &apos;object&apos;){        return;    } else if(window.JSON){        str = JSON.stringify(obj), //系列化对象        newobj = JSON.parse(str); //还原    } else {        for(var i in obj){            newobj[i] = typeof obj[i] === &apos;object&apos; ?             cloneObj(obj[i]) : obj[i];         }    }    return newobj;};</code></pre><p>著作权归作者所有。<br>商业转载请联系作者获得授权，非商业转载请注明出处。<br>作者：青大虫<br>链接：<a href="http://www.zhihu.com/question/23031215/answer/31944721" target="_blank" rel="noopener">http://www.zhihu.com/question/23031215/answer/31944721</a><br>来源：知乎</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;JS深拷贝&quot;&gt;&lt;a href=&quot;#JS深拷贝&quot; class=&quot;headerlink&quot; title=&quot;JS深拷贝&quot;&gt;&lt;/a&gt;JS深拷贝&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;var cloneObj = function(obj){
+    var str, newobj 
+      
+    
+    </summary>
+    
+      <category term="日志" scheme="http://blog.chruyo.com/categories/%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="博客" scheme="http://blog.chruyo.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="javascript" scheme="http://blog.chruyo.com/tags/javascript/"/>
     
   </entry>
   
